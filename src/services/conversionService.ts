@@ -2,9 +2,6 @@
  * Media conversion service using mediabunny
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-
 import {
 	Input,
 	Output,
@@ -22,6 +19,7 @@ import {
 	AdtsOutputFormat,
 	FlacOutputFormat,
 } from 'mediabunny';
+import type { ConversionVideoOptions, ConversionAudioOptions } from 'mediabunny';
 
 import type { MediaFile } from '../types/media.types';
 import type { ConversionResult, ConversionConfig } from '../types/conversion.types';
@@ -231,7 +229,7 @@ async function getVideoConfig(
 	input: Input,
 	qualityProfile: QualityProfile,
 	targetFormat: OutputFormat,
-): Promise<any> {
+): Promise<ConversionVideoOptions | undefined> {
 	// If target format doesn't support video, don't provide video config
 	if (!targetFormat.supportsVideo) {
 		return undefined;
@@ -265,7 +263,7 @@ async function getAudioConfig(
 	input: Input,
 	qualityProfile: QualityProfile,
 	targetFormat: OutputFormat,
-): Promise<any> {
+): Promise<ConversionAudioOptions | undefined> {
 	// If target format doesn't support audio, don't provide audio config
 	if (!targetFormat.supportsAudio) {
 		return undefined;

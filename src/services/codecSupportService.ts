@@ -4,6 +4,7 @@
  */
 
 import { canEncodeAudio, canEncodeVideo } from 'mediabunny';
+import type { AudioCodec, VideoCodec } from 'mediabunny';
 import type { OutputFormat } from '../constants/formats';
 
 /**
@@ -23,7 +24,7 @@ export async function isAudioCodecSupported(codec: string): Promise<boolean> {
 	}
 
 	try {
-		const supported = await canEncodeAudio(codec as any);
+		const supported = await canEncodeAudio(codec as AudioCodec);
 		codecSupportCache.set(cacheKey, supported);
 		return supported;
 	} catch (error) {
@@ -45,7 +46,7 @@ export async function isVideoCodecSupported(codec: string): Promise<boolean> {
 	}
 
 	try {
-		const supported = await canEncodeVideo(codec as any);
+		const supported = await canEncodeVideo(codec as VideoCodec);
 		codecSupportCache.set(cacheKey, supported);
 		return supported;
 	} catch (error) {
