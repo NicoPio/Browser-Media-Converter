@@ -2,9 +2,6 @@
  * Media conversion service using mediabunny
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-
 import {
 	Input,
 	Output,
@@ -231,6 +228,7 @@ async function getVideoConfig(
 	input: Input,
 	qualityProfile: QualityProfile,
 	targetFormat: OutputFormat,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	// If target format doesn't support video, don't provide video config
 	if (!targetFormat.supportsVideo) {
@@ -265,6 +263,7 @@ async function getAudioConfig(
 	input: Input,
 	qualityProfile: QualityProfile,
 	targetFormat: OutputFormat,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	// If target format doesn't support audio, don't provide audio config
 	if (!targetFormat.supportsAudio) {

@@ -23,6 +23,7 @@ export async function isAudioCodecSupported(codec: string): Promise<boolean> {
 	}
 
 	try {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const supported = await canEncodeAudio(codec as any);
 		codecSupportCache.set(cacheKey, supported);
 		return supported;
@@ -45,6 +46,7 @@ export async function isVideoCodecSupported(codec: string): Promise<boolean> {
 	}
 
 	try {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const supported = await canEncodeVideo(codec as any);
 		codecSupportCache.set(cacheKey, supported);
 		return supported;
