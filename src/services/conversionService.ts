@@ -249,7 +249,7 @@ async function getVideoConfig(
 		width: videoSettings.width ?? undefined,
 		height: videoSettings.height ?? undefined,
 		bitrate: videoSettings.bitrate ?? undefined,
-		framerate: videoSettings.frameRate ?? undefined,
+		frameRate: videoSettings.frameRate ?? undefined,
 		codec: videoSettings.codec ?? undefined,
 	};
 }

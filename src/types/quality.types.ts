@@ -2,6 +2,8 @@
  * Quality profile types for defining conversion quality parameters
  */
 
+import type { VideoCodec, AudioCodec } from 'mediabunny';
+
 /**
  * Predefined quality presets
  */
@@ -24,7 +26,7 @@ export interface VideoQualitySettings {
 	/** Frame rate in fps (null = preserve) */
 	frameRate: number | null;
 	/** Video codec (e.g., "h264", "vp9", null = auto) */
-	codec: string | null;
+	codec: VideoCodec | null;
 }
 
 /**
@@ -38,7 +40,7 @@ export interface AudioQualitySettings {
 	/** Channel count: 1=mono, 2=stereo (null = preserve) */
 	channels: number | null;
 	/** Audio codec (e.g., "aac", "opus", null = auto) */
-	codec: string | null;
+	codec: AudioCodec | null;
 }
 
 /**
