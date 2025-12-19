@@ -4,6 +4,10 @@
 	"description": "Browser-based media conversion applications powered by mediabunny",
 	"private": true,
 	"type": "module",
-	"scripts": {},
+	"scripts": {
+		"check": "cd app && npm run type-check",
+		"lint": "cd app && npm run lint",
+		"build": "cd app && npm run build"
+	},
 	"license": "MIT"
 }
