@@ -1,0 +1,18 @@
+node_modules
+/dist
+/dist-docs
+.DS_Store
+/docs/.vitepress/cache
+/docs/api
+*.tsbuildinfo
+
+packages/mp3-encoder/dist
+
+# Browser Media Converter App
+app/browser-media-converter/node_modules
+app/browser-media-converter/dist
+app/browser-media-converter/.env
+app/browser-media-converter/.env.local
+app/browser-media-converter/coverage
+app/browser-media-converter/playwright-report
+app/browser-media-converter/.vite

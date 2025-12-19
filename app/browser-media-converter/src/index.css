@@ -1,0 +1,169 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+	/* Color palette */
+	--color-primary: oklch(0.65 0.25 240);
+	--color-secondary: oklch(0.70 0.20 280);
+	--color-accent: oklch(0.75 0.22 160);
+	--color-success: oklch(0.70 0.18 142);
+	--color-warning: oklch(0.80 0.15 80);
+	--color-error: oklch(0.65 0.25 25);
+
+	/* Border radius */
+	--radius-sm: 4px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
+	--radius-xl: 16px;
+
+	/* Spacing */
+	--spacing-xs: 0.5rem;
+	--spacing-sm: 0.75rem;
+	--spacing-md: 1rem;
+	--spacing-lg: 1.5rem;
+	--spacing-xl: 2rem;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: oklch(0.25 0 0);
+}
+
+::-webkit-scrollbar-thumb {
+	background: oklch(0.40 0 0);
+	border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: oklch(0.50 0 0);
+}
+
+/* Base styles */
+body {
+	margin: 0;
+	padding: 0;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Focus styles */
+*:focus-visible {
+	outline: 2px solid var(--color-primary);
+	outline-offset: 2px;
+}
+
+/* Animations and Transitions */
+
+/* File drop zone animations */
+@keyframes pulse-subtle {
+	0%, 100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.8;
+	}
+}
+
+.animate-pulse-subtle {
+	animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Slide in from bottom */
+@keyframes slideInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-slide-in-up {
+	animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Progress bar fill animation */
+@keyframes progressPulse {
+	0%, 100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.85;
+	}
+}
+
+.animate-progress-pulse {
+	animation: progressPulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, input, select, textarea {
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Card and container transitions */
+.card, [class*="rounded-"], [class*="border"] {
+	transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+				box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+				border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover lift effect */
+.hover-lift:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.2);
+}
+
+/* Scale on hover */
+.hover-scale:hover {
+	transform: scale(1.02);
+}
+
+/* Skeleton shimmer animation */
+@keyframes shimmer {
+	0% {
+		background-position: -1000px 0;
+	}
+	100% {
+		background-position: 1000px 0;
+	}
+}
+
+.skeleton {
+	background: linear-gradient(90deg,
+		oklch(0.25 0 0 / 0.1) 25%,
+		oklch(0.30 0 0 / 0.15) 50%,
+		oklch(0.25 0 0 / 0.1) 75%);
+	background-size: 1000px 100%;
+	animation: shimmer 2s infinite linear;
+}
