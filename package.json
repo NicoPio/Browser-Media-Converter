@@ -5,9 +5,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"check": "cd app/browser-media-converter && npm run type-check",
-		"lint": "cd app/browser-media-converter && npm run lint",
-		"build": "cd app/browser-media-converter && npm run build"
+		"check": "cd app && npm run type-check",
+		"lint": "cd app && npm run lint",
+		"build": "cd app && npm run build"
 	},
 	"license": "MIT"
 }
