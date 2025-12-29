@@ -10,6 +10,7 @@ interface ConversionQueueContextType {
 	queue: ConversionQueue;
 	statistics: QueueStatistics;
 	addJob: (job: ConversionJob) => void;
+	addJobs: (jobs: ConversionJob[], autoStart?: boolean) => void;
 	removeJob: (jobId: string) => void;
 	startQueue: () => Promise<void>;
 	cancelJob: (jobId: string) => Promise<void>;

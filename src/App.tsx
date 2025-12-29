@@ -198,8 +198,8 @@ function App() {
 		// Clear previous queue
 		queueContext.clearAll();
 
-		// Create jobs for all files
-		selectedFiles.forEach((file) => {
+		// Create jobs for all files (atomic batch operation)
+		const jobs = selectedFiles.map((file) => {
 			const job: ConversionJob = {
 				id: file.id,
 				sourceFile: file,
@@ -213,13 +213,14 @@ function App() {
 				completedAt: null,
 				estimatedDuration: null,
 			};
-			queueContext.addJob(job);
+			return job;
 		});
 
-		// Start processing
-		console.log('[Batch] Starting queue with', queueContext.queue.jobs.length, 'jobs');
-		await queueContext.startQueue();
-		console.log('[Batch] Queue started');
+		// Add all jobs with auto-start flag
+		// The useEffect in useConversionQueue will automatically start processing
+		queueContext.addJobs(jobs, true);
+
+		console.log('[Batch] Added', jobs.length, 'jobs to queue (auto-start enabled)');
 	}, [selectedFiles, selectedFormat, qualityProfile, queueContext]);
 
 	// Handle download all as ZIP
@@ -341,19 +342,6 @@ function App() {
 	const canConvert
 		= hasFiles && selectedFormat && !converting && !queueContext.statistics.isProcessing && !isLoadingMetadata;
 	const showProgress = converting || (progress > 0 && progress < 100);
-
-	// Debug: Log canConvert state changes
-	useEffect(() => {
-		console.log('[Convert] canConvert status:', {
-			canConvert,
-			hasFiles,
-			hasFormat: !!selectedFormat,
-			format: selectedFormat?.format,
-			converting,
-			queueProcessing: queueContext.statistics.isProcessing,
-			isLoadingMetadata,
-		});
-	}, [canConvert, hasFiles, selectedFormat, converting, queueContext.statistics.isProcessing, isLoadingMetadata]);
 
 	return (
 		<div className="min-h-screen bg-base-200 p-4">

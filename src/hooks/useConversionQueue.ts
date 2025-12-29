@@ -2,7 +2,7 @@
  * Conversion queue management hook for batch processing
  */
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { ConversionJob, ConversionQueue, QueueStatistics } from '../types/conversion.types';
 import { convert as convertService, cancel as cancelService } from '../services/conversionService';
 import { ConversionError, ConversionErrorType } from '../types/conversion.types';
@@ -18,6 +18,7 @@ export function useConversionQueue() {
 	});
 
 	const processingRef = useRef(false);
+	const autoStartRef = useRef(false);
 
 	/**
 	 * Add a job to the queue
@@ -27,6 +28,22 @@ export function useConversionQueue() {
 			...prev,
 			jobs: [...prev.jobs, job],
 		}));
+	}, []);
+
+	/**
+	 * Add multiple jobs to the queue atomically (prevents multiple re-renders)
+	 */
+	const addJobs = useCallback((jobs: ConversionJob[], autoStart: boolean = false) => {
+		console.log('[addJobs] Adding', jobs.length, 'jobs, autoStart:', autoStart);
+		autoStartRef.current = autoStart;
+		setQueue(prev => {
+			const newJobs = [...prev.jobs, ...jobs];
+			console.log('[addJobs] Queue now has', newJobs.length, 'total jobs');
+			return {
+				...prev,
+				jobs: newJobs,
+			};
+		});
 	}, []);
 
 	/**
@@ -55,9 +72,13 @@ export function useConversionQueue() {
 	 * Start processing the queue
 	 */
 	const startQueue = useCallback(async () => {
-		if (processingRef.current) return;
+		if (processingRef.current) {
+			console.log('[Queue] Already processing, skipping');
+			return;
+		}
 
 		processingRef.current = true;
+		console.log('[Queue] Starting queue processing');
 
 		// Process jobs sequentially
 		while (true) {
@@ -65,10 +86,18 @@ export function useConversionQueue() {
 			let nextJob: ConversionJob | undefined;
 
 			setQueue((prev) => {
+				console.log('[Queue] Current queue state:', {
+					totalJobs: prev.jobs.length,
+					queuedJobs: prev.jobs.filter(j => j.status === 'queued').length,
+					jobStatuses: prev.jobs.map(j => ({ id: j.id, status: j.status })),
+				});
 				nextJob = prev.jobs.find(j => j.status === 'queued');
 				if (!nextJob) {
+					console.log('[Queue] No queued jobs found, stopping');
 					return prev;
 				}
+
+				console.log('[Queue] Processing job:', nextJob.id);
 
 				// Mark as initializing
 				return {
@@ -203,10 +232,22 @@ export function useConversionQueue() {
 		isComplete: queue.jobs.length > 0 && queue.jobs.every(j => j.status === 'completed' || j.status === 'failed'),
 	};
 
+	// Auto-start queue when jobs are added with autoStart flag
+	useEffect(() => {
+		if (autoStartRef.current && !processingRef.current && queue.jobs.some(j => j.status === 'queued')) {
+			console.log('[useEffect] Auto-starting queue processing');
+			autoStartRef.current = false;
+			startQueue().catch(error => {
+				console.error('[useEffect] Auto-start failed:', error);
+			});
+		}
+	}, [queue.jobs, startQueue]);
+
 	return {
 		queue,
 		statistics,
 		addJob,
+		addJobs,
 		removeJob,
 		startQueue,
 		cancelJob,

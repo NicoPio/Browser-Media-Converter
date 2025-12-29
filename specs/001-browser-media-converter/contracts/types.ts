@@ -440,6 +440,8 @@ export interface UseConversionQueueResult {
 	statistics: QueueStatistics;
 	/** Add job to queue */
 	addJob: (job: ConversionJob) => void;
+	/** Add multiple jobs to queue atomically */
+	addJobs: (jobs: ConversionJob[], autoStart?: boolean) => void;
 	/** Remove job from queue */
 	removeJob: (jobId: string) => void;
 	/** Start processing queue */
