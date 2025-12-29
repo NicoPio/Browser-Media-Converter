@@ -1,0 +1,178 @@
+# Deploy Workflow Contract
+# Defines the interface and behavior of the GitHub Pages deployment workflow
+
+workflow:
+  name: Deploy Documentation
+  file: .github/workflows/deploy.yml
+  purpose: Build and deploy documentation and examples to GitHub Pages
+
+triggers:
+  push:
+    branches:
+      - main
+    description: Triggered automatically when commits are merged to main
+
+  workflow_dispatch:
+    description: Allows manual triggering from GitHub Actions UI
+    inputs: none
+
+permissions:
+  contents: read     # Required for actions/checkout
+  pages: write       # Required to create GitHub Pages deployments
+  id-token: write    # Required for OIDC token to verify deployment
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+  description: Only one deployment at a time, queue subsequent deploys
+
+jobs:
+  build:
+    description: Build documentation and examples for deployment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        action: actions/checkout@v4
+
+      - name: Setup Node.js
+        action: actions/setup-node@v4
+        inputs:
+          node-version: "20"
+          cache: npm
+
+      - name: Setup GitHub Pages
+        action: actions/configure-pages@v5
+        description: Configures Pages settings and base URL
+
+      - name: Install dependencies
+        command: npm ci
+
+      - name: Build documentation
+        command: npm run docs:build
+        description: Runs VitePress build for documentation
+
+      - name: Disable Jekyll
+        command: touch docs/.vitepress/dist/.nojekyll
+        description: Prevents GitHub Pages from processing with Jekyll
+
+      - name: Upload Pages artifact
+        action: actions/upload-pages-artifact@v3
+        inputs:
+          path: docs/.vitepress/dist
+
+    outputs:
+      artifact-id: "Pages artifact ID (implicit)"
+
+    success-criteria:
+      - Documentation build completes without errors
+      - All static assets are generated
+      - Artifact is successfully uploaded
+
+  deploy:
+    description: Deploy built documentation to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        action: actions/deploy-pages@v4
+        id: deployment
+
+    outputs:
+      page_url: "URL of deployed GitHub Pages site"
+
+    success-criteria:
+      - Deployment completes without errors
+      - Site is accessible at GitHub Pages URL
+      - All assets load correctly
+
+workflow-inputs:
+  trigger-type: "push to main or manual dispatch"
+  branch: "main (only)"
+
+workflow-outputs:
+  deployment-url: "https://<username>.github.io/mediabunny/"
+  deployment-status: "success/failure"
+  page_url: "Full URL from deploy job output"
+
+behavior:
+  sequential-execution:
+    - Build job runs first
+    - Deploy job waits for build to complete (needs: build)
+    - Deploy job only runs if build succeeds
+
+  concurrency-control:
+    - Only one deployment runs at a time
+    - New deployments wait for current to finish (cancel-in-progress: false)
+    - Prevents race conditions with GitHub Pages updates
+
+  failure-handling:
+    - If build fails, deploy job is skipped
+    - If deploy fails, build artifact remains available for debugging
+    - Failed deployments are visible in GitHub Actions UI
+
+  caching:
+    - npm dependencies cached via actions/setup-node
+    - VitePress build cache not persisted (fresh build each time)
+    - Cache key: hashFiles('**/package-lock.json')
+
+integration:
+  github-pages:
+    repository-settings:
+      source: GitHub Actions
+      branch: N/A (not using branch-based deployment)
+
+    base-path:
+      configuration: base: '/mediabunny/' in VitePress config
+      result: All asset links are prefixed correctly
+
+    custom-domain:
+      supported: yes (requires CNAME file in build output)
+      current: no (using github.io subdomain)
+
+  github-environments:
+    name: github-pages
+    protection-rules: Can be configured for required reviewers
+    deployment-history: Tracked in Environments tab
+
+  github-ui:
+    deployments-tab: Shows deployment history and status
+    environments-tab: Shows github-pages environment with live URL
+    actions-tab: Shows workflow runs and logs
+
+vitepress-configuration:
+  build-command: npm run docs:build
+  output-directory: docs/.vitepress/dist
+  base-path: /mediabunny/
+  additional-files:
+    - .nojekyll (prevents Jekyll processing)
+
+examples-handling:
+  approach: Build examples into subdirectory of docs output
+  build-command: npm run build (if applicable)
+  output-location: docs/.vitepress/dist/examples/
+  access-url: https://<username>.github.io/mediabunny/examples/
+
+performance-targets:
+  build-time: "<3 minutes"
+  deploy-time: "<2 minutes"
+  total-time: "<5 minutes"
+  cache-hit-speedup: "~30-50% faster"
+
+monitoring:
+  deployment-url: Available in workflow output
+  status-checks: Visible in commit status on main branch
+  notification: GitHub sends notification on deployment failure (if configured)
+
+notes:
+  - Workflow only runs on main branch (not on PRs)
+  - Manual dispatch available for re-deploying without new commits
+  - Uses official GitHub Actions for maximum compatibility
+  - OIDC token provides secure authentication without secrets
+  - Build artifact is temporary (used only for deployment)
+  - Site updates are typically visible within 1-2 minutes after deployment completes

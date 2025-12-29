@@ -140,6 +140,8 @@ This is a workspace with packages in `packages/`:
 - Browser localStorage for preferences and conversion history (optional), no backend database required (001-browser-media-converter)
 - TypeScript 5.9.3, JavaScript ES2020+ + React 18.3.1, mediabunny ^1.26.0 (npm), @mediabunny/mp3-encoder ^1.27.0, Vite 6.3.5, Tailwind CSS v4, DaisyUI 5+ (002-migrate-npm-package)
 - Browser localStorage for preferences and conversion history (no database) (002-migrate-npm-package)
+- YAML (GitHub Actions workflow syntax), Node.js 18 and 20 (test matrix) + GitHub Actions runners, GitHub Pages hosting service (003-github-cicd)
+- N/A (stateless CI/CD pipelines, artifacts stored by GitHub) (003-github-cicd)
 
 ## Recent Changes
 - 001-browser-media-converter: Added JavaScript/TypeScript (ES2020+), React 18+ + mediabunny (already installed), React 18, Tailwind CSS v4, DaisyUI 5+
