@@ -520,6 +520,56 @@ function App() {
 									</div>
 								)}
 
+								{/* Help message when format not selected */}
+								{hasFiles && !selectedFormat && (
+									<div className="alert alert-info mt-4">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											className="h-6 w-6 shrink-0 stroke-current"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+											/>
+										</svg>
+										<span>
+											<strong>Select an output format</strong>
+											{' '}
+											to start converting
+											{isBatchMode ? ` ${selectedFiles.length} files` : ' your file'}
+											.
+										</span>
+									</div>
+								)}
+
+								{/* Help message when already converting */}
+								{hasFiles && selectedFormat && (converting || queueContext.statistics.isProcessing) && (
+									<div className="alert alert-warning mt-4">
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											className="h-6 w-6 shrink-0 stroke-current"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+											/>
+										</svg>
+										<span>
+											{isBatchMode
+												? 'Conversion in progress. Please wait for it to complete.'
+												: 'Conversion in progress...'}
+										</span>
+									</div>
+								)}
+
 								{/* Convert Button */}
 								<div className="card-actions justify-end mt-4">
 									<button
