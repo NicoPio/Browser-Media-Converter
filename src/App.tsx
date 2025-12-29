@@ -181,7 +181,19 @@ function App() {
 
 	// Handle batch conversion
 	const handleConvertBatch = useCallback(async () => {
-		if (selectedFiles.length === 0 || !selectedFormat) return;
+		console.log('[Batch] Starting batch conversion', {
+			fileCount: selectedFiles.length,
+			format: selectedFormat?.format,
+			hasFormat: !!selectedFormat,
+		});
+
+		if (selectedFiles.length === 0 || !selectedFormat) {
+			console.warn('[Batch] Cannot start: missing files or format', {
+				fileCount: selectedFiles.length,
+				hasFormat: !!selectedFormat,
+			});
+			return;
+		}
 
 		// Clear previous queue
 		queueContext.clearAll();
@@ -205,8 +217,10 @@ function App() {
 		});
 
 		// Start processing
+		console.log('[Batch] Starting queue with', queueContext.queue.jobs.length, 'jobs');
 		await queueContext.startQueue();
-	}, [selectedFiles, selectedFormat, queueContext]);
+		console.log('[Batch] Queue started');
+	}, [selectedFiles, selectedFormat, qualityProfile, queueContext]);
 
 	// Handle download all as ZIP
 	const handleDownloadAllAsZip = useCallback(async () => {
@@ -327,6 +341,19 @@ function App() {
 	const canConvert
 		= hasFiles && selectedFormat && !converting && !queueContext.statistics.isProcessing && !isLoadingMetadata;
 	const showProgress = converting || (progress > 0 && progress < 100);
+
+	// Debug: Log canConvert state changes
+	useEffect(() => {
+		console.log('[Convert] canConvert status:', {
+			canConvert,
+			hasFiles,
+			hasFormat: !!selectedFormat,
+			format: selectedFormat?.format,
+			converting,
+			queueProcessing: queueContext.statistics.isProcessing,
+			isLoadingMetadata,
+		});
+	}, [canConvert, hasFiles, selectedFormat, converting, queueContext.statistics.isProcessing, isLoadingMetadata]);
 
 	return (
 		<div className="min-h-screen bg-base-200 p-4">
