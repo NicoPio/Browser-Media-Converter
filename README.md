@@ -1,5 +1,8 @@
 # Browser Media Converter
 
+[![CI](https://github.com/NicoPio/Browser-Media-Converter/actions/workflows/ci.yml/badge.svg)](https://github.com/NicoPio/Browser-Media-Converter/actions/workflows/ci.yml)
+[![Deploy](https://github.com/NicoPio/Browser-Media-Converter/actions/workflows/deploy.yml/badge.svg)](https://github.com/NicoPio/Browser-Media-Converter/actions/workflows/deploy.yml)
+
 A privacy-focused, client-side media conversion tool powered by [mediabunny](https://github.com/Vanilagy/mediabunny). Convert video and audio files entirely in your browser without uploading anything to a server.
 
 ## Features
