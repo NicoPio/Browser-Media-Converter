@@ -357,7 +357,6 @@ function App() {
 						<div className="flex-1 text-center">
 							<h1 className="text-4xl font-bold text-primary">Browser Media Converter</h1>
 							<p className="mt-2 text-base-content/70">Convert video and audio files directly in your browser</p>
-							<p className="mt-1 text-sm text-base-content/50">Powered by mediabunny</p>
 						</div>
 						<div className="flex-shrink-0">
 							<SettingsMenu

@@ -13,10 +13,10 @@ interface AppSettings {
 const DEFAULT_SETTINGS: AppSettings = {
 	autoCleanupAfterDownload: true,
 	showOnboardingHints: true,
-	theme: 'light',
+	theme: 'dark',
 };
 
-const STORAGE_KEY = 'browser-media-converter-settings';
+const STORAGE_KEY = 'browser-media-converter-settings-v2';
 
 /**
  * Load settings from localStorage
