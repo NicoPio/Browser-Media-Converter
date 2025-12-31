@@ -7,15 +7,19 @@ import { useState } from 'react';
 interface SettingsMenuProps {
 	autoCleanupAfterDownload: boolean;
 	showOnboardingHints: boolean;
+	theme: 'light' | 'dark';
 	onAutoCleanupChange: (enabled: boolean) => void;
 	onShowHintsChange: (enabled: boolean) => void;
+	onThemeChange: (theme: 'light' | 'dark') => void;
 }
 
 export function SettingsMenu({
 	autoCleanupAfterDownload,
 	showOnboardingHints,
+	theme,
 	onAutoCleanupChange,
 	onShowHintsChange,
+	onThemeChange,
 }: SettingsMenuProps) {
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -51,14 +55,34 @@ export function SettingsMenu({
 
 			{isOpen && (
 				<div
-					className="dropdown-content menu bg-base-100 rounded-box z-50 w-72 p-4 shadow-xl border border-base-300 mt-2"
+					className="dropdown-content menu bg-base-100 rounded-box z-50 w-80 p-4 shadow-xl border border-base-300 mt-2"
 					role="menu"
 				>
 					<h3 className="font-bold text-lg mb-3">Settings</h3>
 
+					{/* Theme setting */}
+					<div className="form-control mb-3">
+						<label className="label cursor-pointer justify-start gap-3 whitespace-normal" htmlFor="theme-toggle">
+							<input
+								id="theme-toggle"
+								type="checkbox"
+								className="toggle toggle-primary"
+								checked={theme === 'dark'}
+								onChange={(e) => onThemeChange(e.target.checked ? 'dark' : 'light')}
+								aria-label="Dark mode"
+							/>
+							<div className="flex-1 min-w-0">
+								<span className="label-text font-medium">Dark mode</span>
+								<p className="text-xs text-base-content/60 mt-1 wrap-break-word">
+									Use dark color scheme
+								</p>
+							</div>
+						</label>
+					</div>
+
 					{/* Auto-cleanup setting */}
 					<div className="form-control mb-3">
-						<label className="label cursor-pointer justify-start gap-3" htmlFor="auto-cleanup">
+						<label className="label cursor-pointer justify-start gap-3 whitespace-normal" htmlFor="auto-cleanup">
 							<input
 								id="auto-cleanup"
 								type="checkbox"
@@ -67,9 +91,9 @@ export function SettingsMenu({
 								onChange={(e) => onAutoCleanupChange(e.target.checked)}
 								aria-label="Auto-cleanup after download"
 							/>
-							<div className="flex-1">
+							<div className="flex-1 min-w-0">
 								<span className="label-text font-medium">Auto-cleanup downloads</span>
-								<p className="text-xs text-base-content/60 mt-1">
+								<p className="text-xs text-base-content/60 mt-1 wrap-break-word">
 									Automatically remove completed conversions after downloading
 								</p>
 							</div>
@@ -78,7 +102,7 @@ export function SettingsMenu({
 
 					{/* Show hints setting */}
 					<div className="form-control">
-						<label className="label cursor-pointer justify-start gap-3" htmlFor="show-hints">
+						<label className="label cursor-pointer justify-start gap-3 whitespace-normal" htmlFor="show-hints">
 							<input
 								id="show-hints"
 								type="checkbox"
@@ -87,9 +111,9 @@ export function SettingsMenu({
 								onChange={(e) => onShowHintsChange(e.target.checked)}
 								aria-label="Show onboarding hints"
 							/>
-							<div className="flex-1">
+							<div className="flex-1 min-w-0">
 								<span className="label-text font-medium">Show helpful hints</span>
-								<p className="text-xs text-base-content/60 mt-1">
+								<p className="text-xs text-base-content/60 mt-1 wrap-break-word">
 									Display tooltips and guidance for first-time users
 								</p>
 							</div>

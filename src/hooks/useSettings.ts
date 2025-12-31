@@ -7,11 +7,13 @@ import { useState, useEffect, useCallback } from 'react';
 interface AppSettings {
 	autoCleanupAfterDownload: boolean;
 	showOnboardingHints: boolean;
+	theme: 'light' | 'dark';
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
-	autoCleanupAfterDownload: true, // Auto-cleanup enabled by default
-	showOnboardingHints: true, // Show hints for first-time users
+	autoCleanupAfterDownload: true,
+	showOnboardingHints: true,
+	theme: 'light',
 };
 
 const STORAGE_KEY = 'browser-media-converter-settings';

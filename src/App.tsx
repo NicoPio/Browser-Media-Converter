@@ -82,6 +82,11 @@ function App() {
 		'Conversion in progress. Are you sure you want to leave?',
 	);
 
+	// Apply theme to HTML root
+	useEffect(() => {
+		document.documentElement.setAttribute('data-theme', settings.theme);
+	}, [settings.theme]);
+
 	// Check browser support on mount
 	useEffect(() => {
 		setIsSupported(isWebCodecsSupported());
@@ -358,8 +363,10 @@ function App() {
 							<SettingsMenu
 								autoCleanupAfterDownload={settings.autoCleanupAfterDownload}
 								showOnboardingHints={settings.showOnboardingHints}
+								theme={settings.theme}
 								onAutoCleanupChange={(enabled) => updateSetting('autoCleanupAfterDownload', enabled)}
 								onShowHintsChange={(enabled) => updateSetting('showOnboardingHints', enabled)}
+								onThemeChange={(theme) => updateSetting('theme', theme)}
 							/>
 						</div>
 					</div>
