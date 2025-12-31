@@ -23,6 +23,7 @@
 		"@mediabunny/mp3-encoder": "^1.27.0",
 		"@types/dom-mediacapture-transform": "^0.1.11",
 		"@types/dom-webcodecs": "0.1.13",
+		"framer-motion": "^12.23.26",
 		"jszip": "^3.10.1",
 		"mediabunny": "^1.27.0",
 		"react": "^18.3.1",

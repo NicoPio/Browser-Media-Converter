@@ -19,6 +19,13 @@ export function useConversionQueue() {
 
 	const processingRef = useRef(false);
 	const autoStartRef = useRef(false);
+	// Store queue state in ref for synchronous access in processing loop
+	const queueRef = useRef<ConversionQueue>(queue);
+
+	// Update ref whenever queue state changes
+	useEffect(() => {
+		queueRef.current = queue;
+	}, [queue]);
 
 	/**
 	 * Add a job to the queue
@@ -82,36 +89,35 @@ export function useConversionQueue() {
 
 		// Process jobs sequentially
 		while (true) {
-			// Get fresh state
-			let nextJob: ConversionJob | undefined;
-
-			setQueue((prev) => {
-				console.log('[Queue] Current queue state:', {
-					totalJobs: prev.jobs.length,
-					queuedJobs: prev.jobs.filter(j => j.status === 'queued').length,
-					jobStatuses: prev.jobs.map(j => ({ id: j.id, status: j.status })),
-				});
-				nextJob = prev.jobs.find(j => j.status === 'queued');
-				if (!nextJob) {
-					console.log('[Queue] No queued jobs found, stopping');
-					return prev;
-				}
-
-				console.log('[Queue] Processing job:', nextJob.id);
-
-				// Mark as initializing
-				return {
-					...prev,
-					activeJob: nextJob,
-					jobs: prev.jobs.map(j =>
-						j.id === nextJob!.id
-							? { ...j, status: 'initializing' as const, startedAt: new Date() }
-							: j,
-					),
-				};
+			// Read current queue state synchronously from ref
+			const currentQueue = queueRef.current;
+			console.log('[Queue] Current queue state:', {
+				totalJobs: currentQueue.jobs.length,
+				queuedJobs: currentQueue.jobs.filter(j => j.status === 'queued').length,
+				jobStatuses: currentQueue.jobs.map(j => ({ id: j.id, status: j.status })),
 			});
 
-			if (!nextJob) break;
+			// Find next queued job
+			const nextJob = currentQueue.jobs.find(j => j.status === 'queued');
+			if (!nextJob) {
+				console.log('[Queue] No queued jobs found, stopping');
+				break;
+			}
+
+			console.log('[Queue] Processing job:', nextJob.id);
+
+			// Mark as initializing
+			setQueue((prev) => ({
+				...prev,
+				activeJob: nextJob,
+				jobs: prev.jobs.map(j =>
+					j.id === nextJob.id
+						? { ...j, status: 'initializing' as const, startedAt: new Date() }
+						: j,
+				),
+			}));
+
+			console.log('[Queue] About to convert job:', nextJob.id);
 
 			try {
 				// Update to converting status
@@ -123,7 +129,7 @@ export function useConversionQueue() {
 					targetFormat: nextJob.targetFormat,
 					qualityProfile: nextJob.qualityProfile,
 					onProgress: (progress) => {
-						updateJob(nextJob!.id, { progress: Math.round(progress * 100) });
+						updateJob(nextJob.id, { progress: Math.round(progress * 100) });
 					},
 				});
 
@@ -137,6 +143,7 @@ export function useConversionQueue() {
 			} catch (error) {
 				// Mark as failed but continue with next job
 				const conversionError = error instanceof Error ? error : new Error('Unknown error');
+				console.error('[Queue] Conversion failed for job:', nextJob.id, error);
 				updateJob(nextJob.id, {
 					status: 'failed',
 					error: conversionError,
@@ -148,6 +155,7 @@ export function useConversionQueue() {
 			setQueue(prev => ({ ...prev, activeJob: null }));
 		}
 
+		console.log('[Queue] Processing complete, stopping');
 		processingRef.current = false;
 	}, [updateJob]);
 

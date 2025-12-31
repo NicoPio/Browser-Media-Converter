@@ -652,10 +652,23 @@ function App() {
 
 								{/* Overall Progress */}
 								{queueContext.statistics.isProcessing && (
-									<div className="mb-4">
+									<div className="mb-4 space-y-2">
+										{queueContext.queue.activeJob && (
+											<div className="text-sm text-base-content/70">
+												<span className="font-medium">Currently processing:</span>
+												{' '}
+												<span className="text-base-content">{queueContext.queue.activeJob.sourceFile.name}</span>
+												{' '}
+												(
+												{queueContext.statistics.completedCount + 1}
+												/
+												{queueContext.statistics.totalJobs}
+												)
+											</div>
+										)}
 										<ProgressBar
 											progress={queueContext.statistics.overallProgress}
-											status={`Processing ${queueContext.statistics.activeCount} of ${queueContext.statistics.totalJobs}...`}
+											status={`Overall progress`}
 										/>
 									</div>
 								)}

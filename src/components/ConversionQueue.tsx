@@ -2,6 +2,7 @@
  * Conversion queue component for displaying batch conversion progress
  */
 
+import { motion, AnimatePresence } from 'framer-motion';
 import type { ConversionJob } from '../types/conversion.types';
 import { ProgressBar } from './ProgressBar';
 import { formatBytes } from '../utils/fileSize';
@@ -50,12 +51,23 @@ export function ConversionQueue({ jobs, onCancel, onRemove, onDownloadComplete, 
 
 	return (
 		<div className="space-y-3" role="list" aria-label="Conversion queue">
-			{jobs.map(job => (
-				<div
-					key={job.id}
-					className="rounded-lg border border-base-300 bg-base-100 p-4 animate-slide-in-up hover-lift"
-					role="listitem"
-				>
+			<AnimatePresence mode="popLayout">
+				{jobs.map((job, index) => (
+					<motion.div
+						key={job.id}
+						className="rounded-lg border border-base-300 bg-base-100 p-4"
+						role="listitem"
+						layout
+						initial={{ opacity: 0, y: 20, scale: 0.95 }}
+						animate={{ opacity: 1, y: 0, scale: 1 }}
+						exit={{ opacity: 0, x: -100, scale: 0.95 }}
+						transition={{
+							duration: 0.3,
+							delay: index * 0.05,
+							layout: { duration: 0.3 },
+						}}
+						whileHover={{ scale: 1.01, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+					>
 					{/* File info and status */}
 					<div className="flex items-start justify-between gap-3 mb-3">
 						<div className="flex-1 min-w-0">
@@ -154,11 +166,34 @@ export function ConversionQueue({ jobs, onCancel, onRemove, onDownloadComplete, 
 
 					{/* Progress bar for active jobs */}
 					{isProcessing(job.status) && (
-						<ProgressBar
-							progress={job.progress}
-							showPercentage={true}
-							size="sm"
-						/>
+						<>
+							<ProgressBar
+								progress={job.progress}
+								showPercentage={true}
+								size="sm"
+							/>
+							{job.startedAt && (
+								<motion.div
+									className="mt-2 flex items-center justify-between text-xs text-base-content/60"
+									initial={{ opacity: 0, y: -5 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ delay: 0.2 }}
+								>
+									<span>
+										{job.status === 'converting' && 'Converting...'}
+										{job.status === 'initializing' && 'Initializing...'}
+										{job.status === 'finalizing' && 'Finalizing...'}
+									</span>
+									{job.progress > 5 && job.estimatedDuration && (
+										<span>
+											~
+											{Math.max(0, Math.round(job.estimatedDuration * (100 - job.progress) / 100))}
+											s remaining
+										</span>
+									)}
+								</motion.div>
+							)}
+						</>
 					)}
 
 					{/* Error message for failed jobs */}
@@ -180,8 +215,9 @@ export function ConversionQueue({ jobs, onCancel, onRemove, onDownloadComplete, 
 							<span className="text-xs">{job.error.message}</span>
 						</div>
 					)}
-				</div>
-			))}
+				</motion.div>
+				))}
+			</AnimatePresence>
 		</div>
 	);
 }

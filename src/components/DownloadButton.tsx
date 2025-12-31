@@ -2,6 +2,7 @@
  * Download button component
  */
 
+import { motion } from 'framer-motion';
 import type { ConversionResult } from '../types/conversion.types';
 import { downloadFile } from '../services/downloadService';
 import { formatBytes } from '../utils/fileSize';
@@ -60,11 +61,16 @@ export function DownloadButton({
 		: 'Download (no file available)';
 
 	return (
-		<button
+		<motion.button
 			className={`btn ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
 			onClick={handleDownload}
 			disabled={isDisabled}
 			aria-label={ariaLabel}
+			whileHover={!isDisabled ? { scale: 1.05 } : {}}
+			whileTap={!isDisabled ? { scale: 0.95 } : {}}
+			initial={{ opacity: 0, y: 10 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.3, ease: 'easeOut' }}
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -84,6 +90,6 @@ export function DownloadButton({
 				Download
 				{result && ` (${formatBytes(result.size)})`}
 			</span>
-		</button>
+		</motion.button>
 	);
 }
