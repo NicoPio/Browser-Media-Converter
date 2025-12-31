@@ -143,12 +143,13 @@ export async function convert(config: ConversionConfig): Promise<ConversionResul
 export async function cancel(jobId: string): Promise<void> {
 	const conversion = activeConversions.get(jobId);
 	if (conversion) {
-		// mediabunny Conversion class should have a cancel/abort method
-		// For now, we'll just remove it from our map
-		activeConversions.delete(jobId);
-
-		// If mediabunny supports cancellation:
-		// await conversion.cancel();
+		try {
+			await conversion.cancel();
+		} catch (error) {
+			console.error('Error cancelling conversion:', error);
+		} finally {
+			activeConversions.delete(jobId);
+		}
 	}
 }
 
