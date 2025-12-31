@@ -34,8 +34,8 @@ export default defineConfig({
 				manualChunks: (id) => {
 					// Core dependencies
 					if (id.includes('node_modules')) {
-						// React vendor bundle
-						if (id.includes('react') || id.includes('react-dom')) {
+						// React vendor bundle - includes framer-motion to ensure React loads first
+						if (id.includes('react') || id.includes('react-dom') || id.includes('framer-motion')) {
 							return 'react-vendor';
 						}
 						// Lazy-loaded JSZip (for batch downloads)
@@ -63,7 +63,7 @@ export default defineConfig({
 		},
 	},
 	optimizeDeps: {
-		include: ['react', 'react-dom', 'mediabunny'],
+		include: ['react', 'react-dom', 'framer-motion', 'mediabunny'],
 		// JSZip is excluded as it's lazy-loaded
 	},
 	test: {
