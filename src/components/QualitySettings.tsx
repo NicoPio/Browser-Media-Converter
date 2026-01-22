@@ -221,7 +221,7 @@ export function QualitySettings({
 							<label
 								key={preset}
 								className={`
-									flex-1 min-w-[150px] cursor-pointer rounded-lg border-2 p-3 transition-all
+									flex items-start flex-1 min-w-[150px] cursor-pointer rounded-lg border-2 p-3 transition-all
 									${
 							qualityProfile.preset === preset
 								? 'border-primary bg-primary/10'
@@ -237,7 +237,7 @@ export function QualitySettings({
 									checked={qualityProfile.preset === preset}
 									onChange={e => handlePresetChange(e.target.value as QualityPreset)}
 									disabled={disabled}
-									className="radio radio-primary radio-sm mr-2"
+									className="radio radio-primary radio-sm mr-2 mt-0.5"
 									aria-describedby={`preset-${preset}-desc`}
 								/>
 								<div>
@@ -270,7 +270,7 @@ export function QualitySettings({
 								checked={qualityProfile.preset === 'custom'}
 								onChange={e => handlePresetChange(e.target.value as QualityPreset)}
 								disabled={disabled}
-								className="radio radio-primary radio-sm mr-2"
+								className="radio radio-primary radio-sm mr-2 mt-0.5"
 								aria-describedby="preset-custom-desc"
 							/>
 							<div>
