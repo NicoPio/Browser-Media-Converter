@@ -55,25 +55,25 @@ export function SettingsMenu({
 
 			{isOpen && (
 				<div
-					className="dropdown-content menu bg-base-100 rounded-box z-50 w-80 p-4 shadow-xl border border-base-300 mt-2"
+					className="dropdown-content bg-base-100 rounded-box z-50 w-80 p-4 shadow-xl border border-base-300 mt-2"
 					role="menu"
 				>
 					<h3 className="font-bold text-lg mb-3">Settings</h3>
 
 					{/* Theme setting */}
 					<div className="form-control mb-3">
-						<label className="label cursor-pointer justify-start gap-3 whitespace-normal" htmlFor="theme-toggle">
+						<label className="label cursor-pointer gap-3 whitespace-normal justify-start w-full" htmlFor="theme-toggle">
 							<input
 								id="theme-toggle"
 								type="checkbox"
-								className="toggle toggle-primary"
+								className="toggle toggle-primary shrink-0"
 								checked={theme === 'dark'}
 								onChange={(e) => onThemeChange(e.target.checked ? 'dark' : 'light')}
 								aria-label="Dark mode"
 							/>
-							<div className="flex-1 min-w-0">
+							<div className="flex-1 text-left">
 								<span className="label-text font-medium">Dark mode</span>
-								<p className="text-xs text-base-content/60 mt-1 wrap-break-word">
+								<p className="text-xs text-base-content/60 mt-1">
 									Use dark color scheme
 								</p>
 							</div>
@@ -82,18 +82,18 @@ export function SettingsMenu({
 
 					{/* Auto-cleanup setting */}
 					<div className="form-control mb-3">
-						<label className="label cursor-pointer justify-start gap-3 whitespace-normal" htmlFor="auto-cleanup">
+						<label className="label cursor-pointer gap-3 whitespace-normal justify-start w-full" htmlFor="auto-cleanup">
 							<input
 								id="auto-cleanup"
 								type="checkbox"
-								className="toggle toggle-primary"
+								className="toggle toggle-primary shrink-0"
 								checked={autoCleanupAfterDownload}
 								onChange={(e) => onAutoCleanupChange(e.target.checked)}
 								aria-label="Auto-cleanup after download"
 							/>
-							<div className="flex-1 min-w-0">
+							<div className="flex-1 text-left">
 								<span className="label-text font-medium">Auto-cleanup downloads</span>
-								<p className="text-xs text-base-content/60 mt-1 wrap-break-word">
+								<p className="text-xs text-base-content/60 mt-1">
 									Automatically remove completed conversions after downloading
 								</p>
 							</div>
@@ -102,18 +102,18 @@ export function SettingsMenu({
 
 					{/* Show hints setting */}
 					<div className="form-control">
-						<label className="label cursor-pointer justify-start gap-3 whitespace-normal" htmlFor="show-hints">
+						<label className="label cursor-pointer gap-3 whitespace-normal justify-start w-full" htmlFor="show-hints">
 							<input
 								id="show-hints"
 								type="checkbox"
-								className="toggle toggle-primary"
+								className="toggle toggle-primary shrink-0"
 								checked={showOnboardingHints}
 								onChange={(e) => onShowHintsChange(e.target.checked)}
 								aria-label="Show onboarding hints"
 							/>
-							<div className="flex-1 min-w-0">
+							<div className="flex-1 text-left">
 								<span className="label-text font-medium">Show helpful hints</span>
-								<p className="text-xs text-base-content/60 mt-1 wrap-break-word">
+								<p className="text-xs text-base-content/60 mt-1">
 									Display tooltips and guidance for first-time users
 								</p>
 							</div>

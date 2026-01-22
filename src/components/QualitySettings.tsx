@@ -212,7 +212,7 @@ export function QualitySettings({
 			{/* Preset Selection */}
 			<fieldset>
 				<legend className="label">
-					<span className="label-text font-medium">Quality Preset</span>
+					<h3 className="label-text font-medium mb-4 text-xl">Quality Preset</h3>
 				</legend>
 				<div className="space-y-2">
 					{/* Preset Radio Buttons */}
@@ -300,7 +300,7 @@ export function QualitySettings({
 			{showAdvanced && qualityProfile.preset === 'custom' && (
 				<div className="space-y-4 rounded-lg border border-base-300 p-4 bg-base-200/50">
 					<div className="flex justify-between items-center">
-						<h3 className="font-medium text-sm">Advanced Settings</h3>
+						<h3 className="font-medium text-xl">Advanced Settings</h3>
 						<span className="text-xs text-base-content/60">
 							Leave blank to preserve source settings
 						</span>
@@ -484,25 +484,29 @@ export function QualitySettings({
 
 			{/* Help Text */}
 			{!showAdvanced && (
-				<div className="alert alert-info text-xs">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						className="stroke-current shrink-0 w-4 h-4"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="2"
-							d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						>
-						</path>
-					</svg>
-					<span>
-						Higher quality settings result in larger file sizes. Balanced is recommended for most
-						use cases.
-					</span>
+				<div className="rounded-xl border border-primary/30 bg-primary/5 backdrop-blur-sm p-3 shadow-lg shadow-primary/5">
+					<div className="flex items-center gap-3">
+						<div className="shrink-0 rounded-full bg-primary/10 p-1.5">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								className="w-4 h-4 stroke-primary"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+								>
+								</path>
+							</svg>
+						</div>
+						<span className="text-xs text-base-content/80">
+							Higher quality settings result in larger file sizes. Balanced is recommended for most
+							use cases.
+						</span>
+					</div>
 				</div>
 			)}
 

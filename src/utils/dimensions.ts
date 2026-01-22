@@ -145,7 +145,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'error',
 			code: 'INVALID_WIDTH',
-			message: 'La largeur doit être positive',
+			message: 'Width must be positive',
 		});
 		isValid = false;
 	}
@@ -154,7 +154,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'error',
 			code: 'INVALID_HEIGHT',
-			message: 'La hauteur doit être positive',
+			message: 'Height must be positive',
 		});
 		isValid = false;
 	}
@@ -173,7 +173,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'error',
 			code: 'WIDTH_TOO_SMALL',
-			message: 'Largeur minimum: 16 pixels',
+			message: 'Minimum width: 16 pixels',
 		});
 		isValid = false;
 	}
@@ -182,7 +182,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'error',
 			code: 'HEIGHT_TOO_SMALL',
-			message: 'Hauteur minimum: 16 pixels',
+			message: 'Minimum height: 16 pixels',
 		});
 		isValid = false;
 	}
@@ -192,7 +192,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'error',
 			code: 'WIDTH_TOO_LARGE',
-			message: 'Largeur maximum: 7680 pixels (8K)',
+			message: 'Maximum width: 7680 pixels (8K)',
 		});
 		isValid = false;
 	}
@@ -201,7 +201,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'error',
 			code: 'HEIGHT_TOO_LARGE',
-			message: 'Hauteur maximum: 4320 pixels (8K)',
+			message: 'Maximum height: 4320 pixels (8K)',
 		});
 		isValid = false;
 	}
@@ -212,7 +212,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'info',
 			code: 'WIDTH_ADJUSTED',
-			message: `Largeur ajustée à ${adjustedWidth} (nombre pair requis)`,
+			message: `Width adjusted to ${adjustedWidth} (even number required)`,
 		});
 	}
 
@@ -221,7 +221,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'info',
 			code: 'HEIGHT_ADJUSTED',
-			message: `Hauteur ajustée à ${adjustedHeight} (nombre pair requis)`,
+			message: `Height adjusted to ${adjustedHeight} (even number required)`,
 		});
 	}
 
@@ -236,7 +236,7 @@ export function validateDimensions(
 			messages.push({
 				severity: 'warning',
 				code: 'UPSCALING',
-				message: "L'agrandissement ne peut pas améliorer la qualité",
+				message: 'Upscaling cannot improve quality',
 			});
 		}
 	}
@@ -246,7 +246,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'warning',
 			code: 'LOW_RESOLUTION',
-			message: 'Résolution très basse, la qualité sera dégradée',
+			message: 'Very low resolution, quality will be degraded',
 		});
 	}
 
@@ -255,7 +255,7 @@ export function validateDimensions(
 		messages.push({
 			severity: 'warning',
 			code: 'HIGH_RESOLUTION',
-			message: "Résolution très élevée, l'encodage peut être lent",
+			message: 'Very high resolution, encoding may be slow',
 		});
 	}
 

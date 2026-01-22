@@ -3,117 +3,117 @@
  */
 
 /**
- * Identifiant unique d'un preset de résolution
+ * Unique identifier for a resolution preset
  */
 export type ResolutionPresetId =
-	| 'original' // Pas de redimensionnement
+	| 'original' // No resize
 	| '4k' // 3840×2160
 	| '1440p' // 2560×1440
 	| '1080p' // 1920×1080
 	| '720p' // 1280×720
 	| '480p' // 854×480
 	| '360p' // 640×360
-	| 'custom'; // Dimensions personnalisées
+	| 'custom'; // Custom dimensions
 
 /**
- * Définition d'un preset de résolution
+ * Definition of a resolution preset
  */
 export interface ResolutionPreset {
-	/** Identifiant unique */
+	/** Unique identifier */
 	id: ResolutionPresetId;
 
-	/** Nom d'affichage (ex: "1080p (Full HD)") */
+	/** Display name (e.g., "1080p (Full HD)") */
 	label: string;
 
-	/** Description courte pour tooltip */
+	/** Short description for tooltip */
 	description: string;
 
-	/** Largeur cible en pixels (null pour 'original' et 'custom') */
+	/** Target width in pixels (null for 'original' and 'custom') */
 	width: number | null;
 
-	/** Hauteur cible en pixels (null pour 'original' et 'custom') */
+	/** Target height in pixels (null for 'original' and 'custom') */
 	height: number | null;
 
-	/** Hauteur de référence pour adaptation ratio (ex: 1080 pour 1080p) */
+	/** Reference height for aspect ratio adaptation (e.g., 1080 for 1080p) */
 	referenceHeight: number | null;
 }
 
 /**
- * Configuration de redimensionnement appliquée à une conversion
+ * Resize configuration applied to a conversion
  */
 export interface ResizeConfiguration {
-	/** Preset sélectionné */
+	/** Selected preset */
 	presetId: ResolutionPresetId;
 
-	/** Largeur cible finale (calculée) */
+	/** Final target width (calculated) */
 	targetWidth: number | null;
 
-	/** Hauteur cible finale (calculée) */
+	/** Final target height (calculated) */
 	targetHeight: number | null;
 
-	/** Préserver le ratio d'aspect automatiquement */
+	/** Automatically preserve aspect ratio */
 	maintainAspectRatio: boolean;
 
-	/** Largeur personnalisée (mode custom uniquement) */
+	/** Custom width (custom mode only) */
 	customWidth: number | null;
 
-	/** Hauteur personnalisée (mode custom uniquement) */
+	/** Custom height (custom mode only) */
 	customHeight: number | null;
 }
 
 /**
- * Niveau de sévérité d'un message de validation
+ * Severity level of a validation message
  */
 export type ValidationSeverity = 'error' | 'warning' | 'info';
 
 /**
- * Message de validation individuel
+ * Individual validation message
  */
 export interface ValidationMessage {
-	/** Niveau de sévérité */
+	/** Severity level */
 	severity: ValidationSeverity;
 
-	/** Code d'erreur pour i18n */
+	/** Error code for i18n */
 	code: string;
 
-	/** Message lisible par l'utilisateur */
+	/** User-readable message */
 	message: string;
 }
 
 /**
- * Résultat complet de validation des dimensions
+ * Complete dimension validation result
  */
 export interface DimensionValidationResult {
-	/** Validation passée (pas d'erreurs bloquantes) */
+	/** Validation passed (no blocking errors) */
 	isValid: boolean;
 
-	/** Dimensions ajustées (nombres pairs) */
+	/** Adjusted dimensions (even numbers) */
 	adjustedWidth: number | null;
 	adjustedHeight: number | null;
 
-	/** Messages de validation */
+	/** Validation messages */
 	messages: ValidationMessage[];
 }
 
 /**
- * Données source pour le calcul des dimensions cibles
+ * Source data for target dimension calculation
  */
 export interface DimensionCalculationInput {
-	/** Largeur source de la vidéo */
+	/** Source video width */
 	sourceWidth: number;
 
-	/** Hauteur source de la vidéo */
+	/** Source video height */
 	sourceHeight: number;
 
-	/** Preset sélectionné */
+	/** Selected preset */
 	preset: ResolutionPreset;
 
-	/** Largeur personnalisée (si mode custom) */
+	/** Custom width (if custom mode) */
 	customWidth?: number | null;
 
-	/** Hauteur personnalisée (si mode custom) */
+	/** Custom height (if custom mode) */
 	customHeight?: number | null;
 
-	/** Préserver le ratio d'aspect */
+	/** Preserve aspect ratio */
 	maintainAspectRatio: boolean;
 }

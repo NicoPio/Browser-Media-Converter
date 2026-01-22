@@ -99,14 +99,14 @@ export function ResizeControls({
 			{/* Resolution Preset Selection */}
 			<fieldset>
 				<legend className="label">
-					<span className="label-text font-medium">Résolution de sortie</span>
+					<h3 className="label-text font-medium text-xl my-4">Output Resolution</h3>
 				</legend>
 				<div className="space-y-2">
 					{/* Preset Radio Buttons */}
 					<div
 						className="grid grid-cols-2 md:grid-cols-4 gap-2"
 						role="radiogroup"
-						aria-label="Sélection de la résolution"
+						aria-label="Resolution selection"
 					>
 						{presets.map(preset => (
 							<label
@@ -134,7 +134,7 @@ export function ResizeControls({
 								<div className="text-sm font-medium">
 									{preset.label}
 									{preset.isUpscale && (
-										<span className="ml-1 text-warning" title="Agrandissement">
+										<span className="ml-1 text-warning" title="Upscaling">
 											↑
 										</span>
 									)}
@@ -157,16 +157,16 @@ export function ResizeControls({
 			{config.presetId === 'custom' && (
 				<div className="space-y-3 rounded-lg border border-base-300 p-4 bg-base-200/50">
 					<div className="flex justify-between items-center">
-						<h4 className="font-medium text-sm">Dimensions personnalisées</h4>
+						<h4 className="font-medium text-sm">Custom Dimensions</h4>
 						<label className="flex items-center gap-2 cursor-pointer">
-							<span className="text-xs text-base-content/70">Préserver le ratio</span>
+							<span className="text-xs text-base-content/70">Maintain aspect ratio</span>
 							<input
 								type="checkbox"
 								checked={config.maintainAspectRatio}
 								onChange={handleAspectRatioToggle}
 								disabled={disabled}
 								className="toggle toggle-primary toggle-sm"
-								aria-label="Préserver le ratio d'aspect"
+								aria-label="Maintain aspect ratio"
 							/>
 						</label>
 					</div>
@@ -175,7 +175,7 @@ export function ResizeControls({
 						{/* Width Input */}
 						<div className="form-control">
 							<label className="label py-1">
-								<span className="label-text text-xs">Largeur (px)</span>
+								<span className="label-text text-xs">Width (px)</span>
 							</label>
 							<input
 								type="number"
@@ -186,14 +186,14 @@ export function ResizeControls({
 								min={16}
 								max={7680}
 								className="input input-bordered input-sm w-full"
-								aria-label="Largeur en pixels"
+								aria-label="Width in pixels"
 							/>
 						</div>
 
 						{/* Height Input */}
 						<div className="form-control">
 							<label className="label py-1">
-								<span className="label-text text-xs">Hauteur (px)</span>
+								<span className="label-text text-xs">Height (px)</span>
 							</label>
 							<input
 								type="number"
@@ -204,7 +204,7 @@ export function ResizeControls({
 								min={16}
 								max={4320}
 								className="input input-bordered input-sm w-full"
-								aria-label="Hauteur en pixels"
+								aria-label="Height in pixels"
 							/>
 						</div>
 					</div>
@@ -217,7 +217,7 @@ export function ResizeControls({
 					className="flex items-center justify-center gap-3 p-3 rounded-lg bg-base-200"
 					role="status"
 					aria-live="polite"
-					aria-label="Aperçu des dimensions"
+					aria-label="Dimensions preview"
 				>
 					<span className="text-sm font-mono">{sourceFormatted}</span>
 					<span className="text-base-content/50">→</span>

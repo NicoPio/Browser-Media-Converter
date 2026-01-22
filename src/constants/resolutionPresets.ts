@@ -11,7 +11,7 @@ export const RESOLUTION_PRESETS: ResolutionPreset[] = [
 	{
 		id: 'original',
 		label: 'Original',
-		description: 'Conserver la résolution source',
+		description: 'Keep source resolution',
 		width: null,
 		height: null,
 		referenceHeight: null,
@@ -59,15 +59,15 @@ export const RESOLUTION_PRESETS: ResolutionPreset[] = [
 	{
 		id: '360p',
 		label: '360p',
-		description: 'Basse résolution - 640×360',
+		description: 'Low resolution - 640×360',
 		width: 640,
 		height: 360,
 		referenceHeight: 360,
 	},
 	{
 		id: 'custom',
-		label: 'Personnalisé',
-		description: 'Définir des dimensions personnalisées',
+		label: 'Custom',
+		description: 'Define custom dimensions',
 		width: null,
 		height: null,
 		referenceHeight: null,
@@ -90,7 +90,7 @@ export const DEFAULT_RESIZE_CONFIG: ResizeConfiguration = {
  * Get a preset by its ID
  */
 export function getPresetById(id: string): ResolutionPreset | undefined {
-	return RESOLUTION_PRESETS.find(preset => preset.id === id);
+	return RESOLUTION_PRESETS.find((preset) => preset.id === id);
 }
 
 /**
@@ -98,7 +98,7 @@ export function getPresetById(id: string): ResolutionPreset | undefined {
  * Filters out presets that would cause upscaling
  */
 export function getDownscalePresets(sourceHeight: number): ResolutionPreset[] {
-	return RESOLUTION_PRESETS.filter(preset => {
+	return RESOLUTION_PRESETS.filter((preset) => {
 		if (preset.id === 'original' || preset.id === 'custom') return true;
 		return preset.referenceHeight !== null && preset.referenceHeight <= sourceHeight;
 	});

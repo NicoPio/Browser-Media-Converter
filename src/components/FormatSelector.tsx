@@ -41,8 +41,8 @@ export function FormatSelector({
 
 	return (
 		<div className="form-control w-full">
-			<label htmlFor="format-select" className="label">
-				<span className="label-text font-medium">Output Format</span>
+			<label htmlFor="format-select" className="label flex justify-between items-center flex-nowrap">
+				<h3 className="label-text font-medium my-4 text-xl">Output Format</h3>
 				{showDetails && (
 					<button
 						type="button"
@@ -79,7 +79,7 @@ export function FormatSelector({
 							disabled={!sameFormat.isEncodable}
 						>
 							{sameFormat.displayName}
-							{!sameFormat.isEncodable && ' - Non supporté'}
+							{!sameFormat.isEncodable && ' - Not supported'}
 						</option>
 					</optgroup>
 				)}
@@ -97,7 +97,7 @@ export function FormatSelector({
 								(
 								{format.extension}
 								)
-								{!format.isEncodable && ' - Non supporté'}
+								{!format.isEncodable && ' - Not supported'}
 							</option>
 						))}
 					</optgroup>
@@ -116,7 +116,7 @@ export function FormatSelector({
 								(
 								{format.extension}
 								)
-								{!format.isEncodable && ' - Non supporté'}
+								{!format.isEncodable && ' - Not supported'}
 							</option>
 						))}
 					</optgroup>
@@ -127,7 +127,7 @@ export function FormatSelector({
 				<>
 					{!('isEncodable' in selectedFormat) || (selectedFormat as OutputFormatWithSupport).isEncodable
 						? (
-								<label className="label">
+								<label className="label mt-4">
 									<span id="format-description" className="label-text-alt text-base-content/60">
 										{selectedFormat.description}
 									</span>
@@ -149,12 +149,13 @@ export function FormatSelector({
 										/>
 									</svg>
 									<span>
-										<strong>Format non supporté :</strong>
+										<strong>Unsupported format:</strong>
 										{' '}
-										Votre navigateur ne peut pas encoder le format
+										Your browser cannot encode
 										{' '}
 										{selectedFormat.displayName}
-										. Veuillez choisir un autre format (MP3, Opus, WAV recommandés).
+										{' '}
+										format. Please choose another format (MP3, Opus, WAV recommended).
 									</span>
 								</div>
 							)}
@@ -203,50 +204,59 @@ export function FormatSelector({
 			)}
 
 			{showTooltip && (
-				<div id="format-guide" className="alert alert-info mt-3 text-xs" role="region" aria-label="Format guide">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						className="h-5 w-5 shrink-0 stroke-current"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="2"
-							d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						>
-						</path>
-					</svg>
-					<div className="text-left">
-						<p className="font-medium">Quick Guide:</p>
-						<ul className="mt-1 space-y-1">
-							<li>
-								<strong>MP4/MOV:</strong>
-								{' '}
-								Best for universal compatibility and sharing
-							</li>
-							<li>
-								<strong>WebM:</strong>
-								{' '}
-								Optimized for web playback, open-source
-							</li>
-							<li>
-								<strong>MKV:</strong>
-								{' '}
-								Flexible container, great for archiving
-							</li>
-							<li>
-								<strong>WAV/FLAC:</strong>
-								{' '}
-								Lossless audio, perfect quality
-							</li>
-							<li>
-								<strong>MP3/AAC:</strong>
-								{' '}
-								Compressed audio, smaller files
-							</li>
-						</ul>
+				<div
+					id="format-guide"
+					className="mt-3 rounded-xl border border-primary/30 bg-primary/5 backdrop-blur-sm p-4 shadow-lg shadow-primary/5"
+					role="region"
+					aria-label="Format guide"
+				>
+					<div className="flex items-start gap-3">
+						<div className="shrink-0 rounded-full bg-primary/10 p-1.5">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								className="h-4 w-4 stroke-primary"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+								>
+								</path>
+							</svg>
+						</div>
+						<div className="text-left text-xs">
+							<p className="font-medium text-base-content">Quick Guide:</p>
+							<ul className="mt-1.5 space-y-1 text-base-content/80">
+								<li>
+									<span className="font-medium text-base-content">MP4/MOV:</span>
+									{' '}
+									Best for universal compatibility and sharing
+								</li>
+								<li>
+									<span className="font-medium text-base-content">WebM:</span>
+									{' '}
+									Optimized for web playback, open-source
+								</li>
+								<li>
+									<span className="font-medium text-base-content">MKV:</span>
+									{' '}
+									Flexible container, great for archiving
+								</li>
+								<li>
+									<span className="font-medium text-base-content">WAV/FLAC:</span>
+									{' '}
+									Lossless audio, perfect quality
+								</li>
+								<li>
+									<span className="font-medium text-base-content">MP3/AAC:</span>
+									{' '}
+									Compressed audio, smaller files
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			)}
