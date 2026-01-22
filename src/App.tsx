@@ -371,7 +371,7 @@ function App() {
 											qualityProfile={qualityProfile}
 											onQualityChange={setQualityProfile}
 											disabled={converting || queueContext.statistics.isProcessing}
-											hasVideo={selectedFile?.metadata?.hasVideo ?? selectedFormat.supportsVideo}
+											hasVideo={(selectedFile?.metadata?.hasVideo ?? true) && selectedFormat.supportsVideo}
 											hasAudio={selectedFile?.metadata?.hasAudio ?? selectedFormat.supportsAudio}
 											sourceWidth={selectedFile?.metadata?.width ?? null}
 											sourceHeight={selectedFile?.metadata?.height ?? null}
