@@ -128,6 +128,7 @@ export function useConversionQueue() {
 					sourceFile: nextJob.sourceFile,
 					targetFormat: nextJob.targetFormat,
 					qualityProfile: nextJob.qualityProfile,
+					resizeConfig: nextJob.resizeConfig,
 					onProgress: (progress) => {
 						updateJob(nextJob.id, { progress: Math.round(progress * 100) });
 					},

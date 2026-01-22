@@ -9,7 +9,9 @@ import type {
 	VideoQualitySettings,
 	AudioQualitySettings,
 } from '../types/quality.types';
+import type { ResizeConfiguration } from '../types/resize.types';
 import { getQualityPreset } from '../constants/qualityPresets';
+import { ResizeControls } from './ResizeControls';
 
 interface QualitySettingsProps {
 	/** Current quality profile */
@@ -22,6 +24,14 @@ interface QualitySettingsProps {
 	hasVideo?: boolean;
 	/** Whether source has audio track */
 	hasAudio?: boolean;
+	/** Source video width (for resize) */
+	sourceWidth?: number | null;
+	/** Source video height (for resize) */
+	sourceHeight?: number | null;
+	/** Current resize configuration */
+	resizeConfig?: ResizeConfiguration;
+	/** Callback when resize configuration changes */
+	onResizeChange?: (config: ResizeConfiguration) => void;
 }
 
 const PRESET_DESCRIPTIONS: Record<Exclude<QualityPreset, 'custom'>, string> = {
@@ -36,6 +46,10 @@ export function QualitySettings({
 	disabled = false,
 	hasVideo = true,
 	hasAudio = true,
+	sourceWidth = null,
+	sourceHeight = null,
+	resizeConfig,
+	onResizeChange,
 }: QualitySettingsProps) {
 	const [showAdvanced, setShowAdvanced] = useState(qualityProfile.preset === 'custom');
 	const [warnings, setWarnings] = useState<string[]>([]);
@@ -269,6 +283,18 @@ export function QualitySettings({
 					</div>
 				</div>
 			</fieldset>
+
+			{/* Resize Controls */}
+			{hasVideo && resizeConfig && onResizeChange && (
+				<ResizeControls
+					config={resizeConfig}
+					onConfigChange={onResizeChange}
+					sourceWidth={sourceWidth}
+					sourceHeight={sourceHeight}
+					disabled={disabled}
+					hasVideo={hasVideo}
+				/>
+			)}
 
 			{/* Advanced Settings (shown when Custom is selected) */}
 			{showAdvanced && qualityProfile.preset === 'custom' && (

@@ -5,6 +5,7 @@
 import type { MediaFile } from './media.types';
 import type { OutputFormat } from '../constants/formats';
 import type { QualityProfile } from './quality.types';
+import type { ResizeConfiguration } from './resize.types';
 
 /**
  * Conversion job status states
@@ -44,6 +45,8 @@ export interface ConversionJob {
 	targetFormat: OutputFormat;
 	/** Quality settings for conversion */
 	qualityProfile: QualityProfile;
+	/** Resize configuration (optional) */
+	resizeConfig?: ResizeConfiguration;
 	/** Current conversion status */
 	status: ConversionStatus;
 	/** Progress percentage (0-100) */
@@ -104,6 +107,8 @@ export interface ConversionConfig {
 	targetFormat: OutputFormat;
 	/** Quality settings */
 	qualityProfile: QualityProfile;
+	/** Resize configuration (optional) */
+	resizeConfig?: ResizeConfiguration;
 	/** Progress callback (0-1) */
 	onProgress?: (progress: number) => void;
 }
