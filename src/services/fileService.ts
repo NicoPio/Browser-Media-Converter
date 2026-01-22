@@ -104,7 +104,8 @@ export function getSupportedOutputFormats(file: MediaFile): OutputFormat[] {
 		return OUTPUT_FORMATS;
 	} else if (!hasVideo && hasAudio) {
 		// Audio only - can convert to audio formats, but not to video formats
-		return getAudioFormats();
+		// Exclude 'same' format since there's no video to resize
+		return getAudioFormats().filter(f => f.format !== 'same');
 	}
 
 	// No tracks detected - return all formats and let mediabunny handle it

@@ -35,7 +35,8 @@ export function FormatSelector({
 	};
 
 	// Group formats by type
-	const videoFormats = formats.filter(f => f.supportsVideo);
+	const sameFormat = formats.find(f => f.format === 'same');
+	const videoFormats = formats.filter(f => f.supportsVideo && f.format !== 'same');
 	const audioFormats = formats.filter(f => !f.supportsVideo && f.supportsAudio);
 
 	return (
@@ -69,6 +70,19 @@ export function FormatSelector({
 				<option value="" disabled>
 					{formats.length === 0 ? 'No compatible formats' : 'Select output format'}
 				</option>
+
+				{sameFormat && (
+					<optgroup label="Resize Only">
+						<option
+							key={sameFormat.format}
+							value={sameFormat.format}
+							disabled={!sameFormat.isEncodable}
+						>
+							{sameFormat.displayName}
+							{!sameFormat.isEncodable && ' - Non supporté'}
+						</option>
+					</optgroup>
+				)}
 
 				{videoFormats.length > 0 && (
 					<optgroup label="Video Formats">

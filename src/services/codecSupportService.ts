@@ -60,6 +60,11 @@ export async function isVideoCodecSupported(codec: string): Promise<boolean> {
  * Check if an output format is fully supported (all recommended codecs are encodable)
  */
 export async function isFormatSupported(format: OutputFormat): Promise<boolean> {
+	// 'same' format uses passthrough, so it's always supported
+	if (format.format === 'same') {
+		return true;
+	}
+
 	// Check video codecs if format supports video
 	if (format.supportsVideo && format.recommendedCodecs.video.length > 0) {
 		const videoSupport = await Promise.all(

@@ -26,6 +26,7 @@ import type { ConversionResult, ConversionConfig } from '../types/conversion.typ
 import type { QualityProfile } from '../types/quality.types';
 import type { ResizeConfiguration } from '../types/resize.types';
 import type { FormatType, OutputFormat } from '../constants/formats';
+import { resolveOutputFormat, mapSourceFormatToFormatType } from '../constants/formats';
 import { ConversionError, ConversionErrorType } from '../types/conversion.types';
 import { generateFilename } from './downloadService';
 import { calculatePresetDimensions, calculateTargetDimensions } from '../utils/dimensions';
@@ -53,10 +54,13 @@ export async function convert(config: ConversionConfig): Promise<ConversionResul
 			formats: ALL_FORMATS,
 		});
 
+		// Resolve 'same' format to actual format based on input metadata
+		const resolvedFormat = resolveOutputFormat(targetFormat, sourceFile.metadata?.format);
+
 		// Create output with target format
 		const target = new BufferTarget();
 
-		const outputFormat = getOutputFormatClass(targetFormat.format);
+		const outputFormat = getOutputFormatClass(resolvedFormat.format, sourceFile.metadata?.format);
 
 		const output = new Output({
 			target,
@@ -65,11 +69,11 @@ export async function convert(config: ConversionConfig): Promise<ConversionResul
 
 		// Configure video settings from quality profile and resize config
 
-		const videoConfig = await getVideoConfig(input, qualityProfile, targetFormat, resizeConfig);
+		const videoConfig = await getVideoConfig(input, qualityProfile, resolvedFormat, resizeConfig);
 
 		// Configure audio settings from quality profile
 
-		const audioConfig = await getAudioConfig(input, qualityProfile, targetFormat);
+		const audioConfig = await getAudioConfig(input, qualityProfile, resolvedFormat);
 
 		// Initialize conversion (mediabunny API uses any types)
 
@@ -107,10 +111,10 @@ export async function convert(config: ConversionConfig): Promise<ConversionResul
 		}
 
 		// Create Blob from buffer
-		const blob = new Blob([buffer], { type: targetFormat.mimeType });
+		const blob = new Blob([buffer], { type: resolvedFormat.mimeType });
 
 		// Generate output filename
-		const filename = generateFilename(sourceFile.name, targetFormat.extension);
+		const filename = generateFilename(sourceFile.name, resolvedFormat.extension);
 
 		return {
 			blob,
@@ -199,8 +203,21 @@ export function estimateOutputSize(sourceFile: MediaFile, qualityProfile: Qualit
  * Returns mediabunny format class (types not exported by library)
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getOutputFormatClass(formatType: FormatType): any {
-	switch (formatType) {
+function getOutputFormatClass(formatType: FormatType, sourceFormat?: string): any {
+	// Handle 'same' format by mapping to actual format from source
+	let actualFormatType = formatType;
+	if (formatType === 'same' && sourceFormat) {
+		const mapped = mapSourceFormatToFormatType(sourceFormat);
+		if (mapped) {
+			actualFormatType = mapped;
+		} else {
+			throw new Error(`Cannot determine output format from source format: ${sourceFormat}`);
+		}
+	} else if (formatType === 'same') {
+		throw new Error('Cannot use "same" format without source metadata');
+	}
+
+	switch (actualFormatType) {
 		case 'mp4':
 			return new Mp4OutputFormat();
 		case 'mov':
@@ -220,7 +237,7 @@ function getOutputFormatClass(formatType: FormatType): any {
 		case 'flac':
 			return new FlacOutputFormat();
 		default:
-			throw new Error(`Unsupported output format: ${formatType}`);
+			throw new Error(`Unsupported output format: ${actualFormatType}`);
 	}
 }
 

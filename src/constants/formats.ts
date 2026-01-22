@@ -4,8 +4,9 @@
 
 /**
  * Supported output format types
+ * 'same' represents keeping the same format as the input file
  */
-export type FormatType = 'mp4' | 'mov' | 'webm' | 'mkv' | 'wav' | 'mp3' | 'ogg' | 'aac' | 'flac';
+export type FormatType = 'same' | 'mp4' | 'mov' | 'webm' | 'mkv' | 'wav' | 'mp3' | 'ogg' | 'aac' | 'flac';
 
 /**
  * Recommended codecs for a format
@@ -48,9 +49,27 @@ export interface OutputFormatWithSupport extends OutputFormat {
 }
 
 /**
+ * Special format for keeping the same format as input (resize only)
+ */
+export const SAME_AS_INPUT_FORMAT: OutputFormat = {
+	format: 'same',
+	extension: '',
+	mimeType: '',
+	displayName: 'Same as input',
+	description: 'Keep the original format and codecs. Only apply resize if configured.',
+	supportsVideo: true,
+	supportsAudio: true,
+	recommendedCodecs: {
+		video: [],
+		audio: [],
+	},
+};
+
+/**
  * List of all supported output formats
  */
 export const OUTPUT_FORMATS: OutputFormat[] = [
+	SAME_AS_INPUT_FORMAT,
 	{
 		format: 'mp4',
 		extension: '.mp4',
@@ -189,4 +208,48 @@ export function getVideoFormats(): OutputFormat[] {
  */
 export function getAudioFormats(): OutputFormat[] {
 	return OUTPUT_FORMATS.filter(f => f.supportsAudio);
+}
+
+/**
+ * Map a source format name to a FormatType
+ * Used when resolving 'same' format to the actual input format
+ */
+export function mapSourceFormatToFormatType(sourceFormat: string): FormatType | null {
+	const formatMap: Record<string, FormatType> = {
+		'mp4': 'mp4',
+		'isobmff': 'mp4',
+		'mov': 'mov',
+		'quicktime': 'mov',
+		'webm': 'webm',
+		'matroska': 'mkv',
+		'mkv': 'mkv',
+		'wav': 'wav',
+		'wave': 'wav',
+		'mp3': 'mp3',
+		'ogg': 'ogg',
+		'aac': 'aac',
+		'adts': 'aac',
+		'flac': 'flac',
+	};
+	return formatMap[sourceFormat.toLowerCase()] || null;
+}
+
+/**
+ * Resolve the 'same' format to the actual format based on source metadata
+ */
+export function resolveOutputFormat(
+	targetFormat: OutputFormat,
+	sourceFormat: string | undefined,
+): OutputFormat {
+	if (targetFormat.format !== 'same' || !sourceFormat) {
+		return targetFormat;
+	}
+
+	const resolvedFormatType = mapSourceFormatToFormatType(sourceFormat);
+	if (!resolvedFormatType) {
+		return targetFormat;
+	}
+
+	const resolvedFormat = getFormatByType(resolvedFormatType);
+	return resolvedFormat || targetFormat;
 }
