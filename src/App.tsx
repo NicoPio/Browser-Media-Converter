@@ -36,8 +36,10 @@ import type { MediaFile } from './types/media.types';
 import type { OutputFormat, OutputFormatWithSupport } from './constants/formats';
 import type { ConversionResult, ConversionJob } from './types/conversion.types';
 import type { QualityProfile } from './types/quality.types';
+import type { ResizeConfiguration } from './types/resize.types';
 import { OUTPUT_FORMATS } from './constants/formats';
 import { DEFAULT_QUALITY } from './constants/qualityPresets';
+import { DEFAULT_RESIZE_CONFIG } from './constants/resolutionPresets';
 import { formatBytes } from './utils/fileSize';
 
 type AppMode = 'single' | 'batch';
@@ -61,6 +63,9 @@ function App() {
 
 	// Quality settings
 	const [qualityProfile, setQualityProfile] = useState<QualityProfile>(DEFAULT_QUALITY);
+
+	// Resize settings
+	const [resizeConfig, setResizeConfig] = useState<ResizeConfiguration>(DEFAULT_RESIZE_CONFIG);
 
 	// Single-file conversion state
 	const [conversionResult, setConversionResult] = useState<ConversionResult | null>(null);
@@ -175,6 +180,7 @@ function App() {
 				sourceFile: selectedFile,
 				targetFormat: selectedFormat,
 				qualityProfile,
+				resizeConfig,
 			});
 
 			result.url = createBlobUrl(result);
@@ -182,7 +188,7 @@ function App() {
 		} catch (error) {
 			console.error('Conversion failed:', error);
 		}
-	}, [selectedFile, selectedFormat, convert]);
+	}, [selectedFile, selectedFormat, convert, resizeConfig]);
 
 	// Handle batch conversion
 	const handleConvertBatch = useCallback(async () => {
@@ -210,6 +216,7 @@ function App() {
 				sourceFile: file,
 				targetFormat: selectedFormat,
 				qualityProfile,
+				resizeConfig,
 				status: 'queued',
 				progress: 0,
 				error: null,
@@ -258,6 +265,7 @@ function App() {
 		setValidationError(null);
 		setAvailableFormats(OUTPUT_FORMATS.map(f => ({ ...f, isEncodable: true })));
 		setMode('single');
+		setResizeConfig(DEFAULT_RESIZE_CONFIG);
 		queueContext.clearAll();
 	}, [conversionResult, queueContext]);
 
@@ -480,6 +488,10 @@ function App() {
 												disabled={converting || queueContext.statistics.isProcessing}
 												hasVideo={selectedFile?.metadata?.hasVideo ?? selectedFormat.supportsVideo}
 												hasAudio={selectedFile?.metadata?.hasAudio ?? selectedFormat.supportsAudio}
+												sourceWidth={selectedFile?.metadata?.width ?? null}
+												sourceHeight={selectedFile?.metadata?.height ?? null}
+												resizeConfig={resizeConfig}
+												onResizeChange={setResizeConfig}
 											/>
 										</Suspense>
 									</div>

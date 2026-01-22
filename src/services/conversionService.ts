@@ -24,9 +24,12 @@ import type { ConversionVideoOptions, ConversionAudioOptions } from 'mediabunny'
 import type { MediaFile } from '../types/media.types';
 import type { ConversionResult, ConversionConfig } from '../types/conversion.types';
 import type { QualityProfile } from '../types/quality.types';
+import type { ResizeConfiguration } from '../types/resize.types';
 import type { FormatType, OutputFormat } from '../constants/formats';
 import { ConversionError, ConversionErrorType } from '../types/conversion.types';
 import { generateFilename } from './downloadService';
+import { calculatePresetDimensions, calculateTargetDimensions } from '../utils/dimensions';
+import { getPresetById } from '../constants/resolutionPresets';
 
 /**
  * Active conversions map for cancellation support
@@ -40,7 +43,7 @@ const activeConversions = new Map<string, Conversion>();
  * @throws ConversionError if conversion fails
  */
 export async function convert(config: ConversionConfig): Promise<ConversionResult> {
-	const { sourceFile, targetFormat, qualityProfile, onProgress } = config;
+	const { sourceFile, targetFormat, qualityProfile, resizeConfig, onProgress } = config;
 
 	try {
 		// Create input from source file
@@ -60,9 +63,9 @@ export async function convert(config: ConversionConfig): Promise<ConversionResul
 			format: outputFormat,
 		});
 
-		// Configure video settings from quality profile
+		// Configure video settings from quality profile and resize config
 
-		const videoConfig = await getVideoConfig(input, qualityProfile, targetFormat);
+		const videoConfig = await getVideoConfig(input, qualityProfile, targetFormat, resizeConfig);
 
 		// Configure audio settings from quality profile
 
@@ -222,7 +225,7 @@ function getOutputFormatClass(formatType: FormatType): any {
 }
 
 /**
- * Get video configuration from quality profile
+ * Get video configuration from quality profile and resize config
  * Returns mediabunny video config (types not exported by library)
  */
 
@@ -230,6 +233,7 @@ async function getVideoConfig(
 	input: Input,
 	qualityProfile: QualityProfile,
 	targetFormat: OutputFormat,
+	resizeConfig?: ResizeConfiguration,
 ): Promise<ConversionVideoOptions | undefined> {
 	// If target format doesn't support video, don't provide video config
 	if (!targetFormat.supportsVideo) {
@@ -242,16 +246,64 @@ async function getVideoConfig(
 	}
 
 	const videoSettings = qualityProfile.video;
-	if (!videoSettings) {
-		return undefined; // Use defaults
+
+	// Calculate resize dimensions if resizeConfig is provided
+	let resizeWidth: number | undefined;
+	let resizeHeight: number | undefined;
+
+	if (resizeConfig && resizeConfig.presetId !== 'original') {
+		// Get source dimensions from first video track (use displayWidth/Height for proper rotation handling)
+		const firstTrack = videoTracks[0];
+		const sourceWidth = firstTrack.displayWidth;
+		const sourceHeight = firstTrack.displayHeight;
+
+		if (sourceWidth && sourceHeight) {
+			if (resizeConfig.presetId === 'custom') {
+				// Custom dimensions
+				if (resizeConfig.customWidth !== null || resizeConfig.customHeight !== null) {
+					const result = calculateTargetDimensions(
+						sourceWidth,
+						sourceHeight,
+						resizeConfig.customWidth,
+						resizeConfig.customHeight,
+						resizeConfig.maintainAspectRatio,
+					);
+					resizeWidth = result.width;
+					resizeHeight = result.height;
+				}
+			} else {
+				// Preset dimensions
+				const preset = getPresetById(resizeConfig.presetId);
+				if (preset) {
+					const result = calculatePresetDimensions(sourceWidth, sourceHeight, preset);
+					resizeWidth = result.width;
+					resizeHeight = result.height;
+				}
+			}
+		}
 	}
 
+	// If no resize and no quality settings, use defaults
+	if (!videoSettings && resizeWidth === undefined && resizeHeight === undefined) {
+		return undefined;
+	}
+
+	// Determine final dimensions
+	const finalWidth = resizeWidth ?? videoSettings?.width ?? undefined;
+	const finalHeight = resizeHeight ?? videoSettings?.height ?? undefined;
+
+	// When both width and height are provided, fit is required by mediabunny
+	// Use 'contain' to preserve aspect ratio (letterboxing if needed)
+	const fit = (finalWidth !== undefined && finalHeight !== undefined) ? 'contain' as const : undefined;
+
 	return {
-		width: videoSettings.width ?? undefined,
-		height: videoSettings.height ?? undefined,
-		bitrate: videoSettings.bitrate ?? undefined,
-		frameRate: videoSettings.frameRate ?? undefined,
-		codec: videoSettings.codec ?? undefined,
+		// Resize dimensions take precedence over quality profile dimensions
+		width: finalWidth,
+		height: finalHeight,
+		fit,
+		bitrate: videoSettings?.bitrate ?? undefined,
+		frameRate: videoSettings?.frameRate ?? undefined,
+		codec: videoSettings?.codec ?? undefined,
 	};
 }
 
