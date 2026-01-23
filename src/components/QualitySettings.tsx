@@ -10,8 +10,14 @@ import type {
 	AudioQualitySettings,
 } from '../types/quality.types';
 import type { ResizeConfiguration } from '../types/resize.types';
+import type { OutputFormat } from '../constants/formats';
 import { getQualityPreset } from '../constants/qualityPresets';
 import { ResizeControls } from './ResizeControls';
+import {
+	getSupportedVideoCodecsForFormat,
+	getSupportedAudioCodecsForFormat,
+	type CodecWithSupport,
+} from '../services/codecSupportService';
 
 interface QualitySettingsProps {
 	/** Current quality profile */
@@ -32,6 +38,8 @@ interface QualitySettingsProps {
 	resizeConfig?: ResizeConfiguration;
 	/** Callback when resize configuration changes */
 	onResizeChange?: (config: ResizeConfiguration) => void;
+	/** Selected output format (for codec filtering) */
+	selectedFormat?: OutputFormat | null;
 }
 
 const PRESET_DESCRIPTIONS: Record<Exclude<QualityPreset, 'custom'>, string> = {
@@ -39,6 +47,25 @@ const PRESET_DESCRIPTIONS: Record<Exclude<QualityPreset, 'custom'>, string> = {
 	balanced: 'Good quality, moderate size (2.5 Mbps video, 128 kbps audio)',
 	small: 'Smaller files, lower quality (1 Mbps video, 96 kbps audio)',
 };
+
+const CODEC_DISPLAY_NAMES: Record<string, string> = {
+	avc: 'H.264',
+	hevc: 'H.265',
+	vp8: 'VP8',
+	vp9: 'VP9',
+	av1: 'AV1',
+	aac: 'AAC',
+	opus: 'Opus',
+	vorbis: 'Vorbis',
+	mp3: 'MP3',
+	flac: 'FLAC',
+	'pcm-s16': 'PCM 16-bit',
+	'pcm-f32': 'PCM 32-bit',
+};
+
+function getCodecDisplayName(codec: string): string {
+	return CODEC_DISPLAY_NAMES[codec] || codec.toUpperCase();
+}
 
 export function QualitySettings({
 	qualityProfile,
@@ -50,9 +77,31 @@ export function QualitySettings({
 	sourceHeight = null,
 	resizeConfig,
 	onResizeChange,
+	selectedFormat = null,
 }: QualitySettingsProps) {
 	const [showAdvanced, setShowAdvanced] = useState(qualityProfile.preset === 'custom');
 	const [warnings, setWarnings] = useState<string[]>([]);
+	const [videoCodecs, setVideoCodecs] = useState<CodecWithSupport[]>([]);
+	const [audioCodecs, setAudioCodecs] = useState<CodecWithSupport[]>([]);
+
+	useEffect(() => {
+		if (!selectedFormat) {
+			setVideoCodecs([]);
+			setAudioCodecs([]);
+			return;
+		}
+
+		const loadCodecs = async () => {
+			const [video, audio] = await Promise.all([
+				getSupportedVideoCodecsForFormat(selectedFormat),
+				getSupportedAudioCodecsForFormat(selectedFormat),
+			]);
+			setVideoCodecs(video);
+			setAudioCodecs(audio);
+		};
+
+		loadCodecs();
+	}, [selectedFormat]);
 
 	const handlePresetChange = (preset: QualityPreset) => {
 		if (preset === 'custom') {
@@ -283,6 +332,76 @@ export function QualitySettings({
 					</div>
 				</div>
 			</fieldset>
+
+			{/* Codec Selection */}
+			{(videoCodecs.length > 0 || audioCodecs.length > 0) && (
+				<fieldset>
+					<legend className="label">
+						<h3 className="label-text font-medium mb-4 text-xl">Codec Selection</h3>
+					</legend>
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						{/* Video Codec */}
+						{hasVideo && videoCodecs.length > 0 && (
+							<div className="form-control">
+								<label className="label py-1">
+									<span className="label-text text-sm">Video Codec</span>
+								</label>
+								<select
+									value={qualityProfile.video?.codec ?? ''}
+									onChange={e =>
+										handleVideoSettingChange(
+											'codec',
+											e.target.value || null,
+										)}
+									disabled={disabled}
+									className="select select-bordered w-full"
+								>
+									<option value="">Auto</option>
+									{videoCodecs.map(({ codec, supported }) => (
+										<option
+											key={codec}
+											value={codec}
+											disabled={!supported}
+										>
+											{getCodecDisplayName(codec)}{!supported ? ' (not supported)' : ''}
+										</option>
+									))}
+								</select>
+							</div>
+						)}
+
+						{/* Audio Codec */}
+						{hasAudio && audioCodecs.length > 0 && (
+							<div className="form-control">
+								<label className="label py-1">
+									<span className="label-text text-sm">Audio Codec</span>
+								</label>
+								<select
+									value={qualityProfile.audio?.codec ?? ''}
+									onChange={e =>
+										handleAudioSettingChange(
+											'codec',
+											e.target.value || null,
+										)}
+									disabled={disabled}
+									className="select select-bordered w-full"
+								>
+									<option value="">Auto</option>
+									{audioCodecs.map(({ codec, supported }) => (
+										<option
+											key={codec}
+											value={codec}
+											disabled={!supported}
+										>
+											{getCodecDisplayName(codec)}{!supported ? ' (not supported)' : ''}
+										</option>
+									))}
+								</select>
+							</div>
+						)}
+					</div>
+				</fieldset>
+			)}
 
 			{/* Resize Controls */}
 			{hasVideo && resizeConfig && onResizeChange && (

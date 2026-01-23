@@ -123,3 +123,49 @@ export async function getUnsupportedCodecs(format: OutputFormat): Promise<string
 export function clearCodecSupportCache(): void {
 	codecSupportCache.clear();
 }
+
+/**
+ * Codec with support status
+ */
+export interface CodecWithSupport {
+	codec: string;
+	supported: boolean;
+}
+
+/**
+ * Get supported video codecs for a format
+ * Returns codecs with their support status
+ */
+export async function getSupportedVideoCodecsForFormat(format: OutputFormat): Promise<CodecWithSupport[]> {
+	if (!format.supportsVideo || format.recommendedCodecs.video.length === 0) {
+		return [];
+	}
+
+	const results = await Promise.all(
+		format.recommendedCodecs.video.map(async (codec) => ({
+			codec,
+			supported: await isVideoCodecSupported(codec),
+		})),
+	);
+
+	return results;
+}
+
+/**
+ * Get supported audio codecs for a format
+ * Returns codecs with their support status
+ */
+export async function getSupportedAudioCodecsForFormat(format: OutputFormat): Promise<CodecWithSupport[]> {
+	if (!format.supportsAudio || format.recommendedCodecs.audio.length === 0) {
+		return [];
+	}
+
+	const results = await Promise.all(
+		format.recommendedCodecs.audio.map(async (codec) => ({
+			codec,
+			supported: await isAudioCodecSupported(codec),
+		})),
+	);
+
+	return results;
+}

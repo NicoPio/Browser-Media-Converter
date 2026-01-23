@@ -382,6 +382,7 @@ function App() {
 											sourceHeight={selectedFile?.metadata?.height ?? null}
 											resizeConfig={resizeConfig}
 											onResizeChange={setResizeConfig}
+											selectedFormat={selectedFormat}
 										/>
 									</Suspense>
 								)}

@@ -79,7 +79,7 @@ export const OUTPUT_FORMATS: OutputFormat[] = [
 		supportsVideo: true,
 		supportsAudio: true,
 		recommendedCodecs: {
-			video: ['h264', 'h265'],
+			video: ['avc', 'hevc'],
 			audio: ['aac', 'mp3'],
 		},
 	},
@@ -92,7 +92,7 @@ export const OUTPUT_FORMATS: OutputFormat[] = [
 		supportsVideo: true,
 		supportsAudio: true,
 		recommendedCodecs: {
-			video: ['h264', 'h265'],
+			video: ['avc', 'hevc'],
 			audio: ['aac'],
 		},
 	},
@@ -118,7 +118,7 @@ export const OUTPUT_FORMATS: OutputFormat[] = [
 		supportsVideo: true,
 		supportsAudio: true,
 		recommendedCodecs: {
-			video: ['h264', 'h265', 'vp9', 'av1'],
+			video: ['avc', 'hevc', 'vp9', 'av1'],
 			audio: ['aac', 'opus', 'flac'],
 		},
 	},
