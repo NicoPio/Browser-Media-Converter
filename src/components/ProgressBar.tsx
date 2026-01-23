@@ -77,7 +77,11 @@ export function ProgressBar({ progress, status, showPercentage = true, size = 'm
 				>
 					{clampedProgress > 0 && clampedProgress < 100 && (
 						<motion.div
-							className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+							className="absolute inset-0"
+							style={{
+								// Safari interprets 'transparent' as transparent black, so we use explicit rgba values
+								background: 'linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)',
+							}}
 							animate={{ x: ['-100%', '200%'] }}
 							transition={{
 								duration: 1.2,
