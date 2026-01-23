@@ -237,7 +237,7 @@ export function QualitySettings({
 									checked={qualityProfile.preset === preset}
 									onChange={e => handlePresetChange(e.target.value as QualityPreset)}
 									disabled={disabled}
-									className="radio radio-primary radio-sm mr-2 mt-0.5"
+									className="sr-only"
 									aria-describedby={`preset-${preset}-desc`}
 								/>
 								<div>
@@ -270,7 +270,7 @@ export function QualitySettings({
 								checked={qualityProfile.preset === 'custom'}
 								onChange={e => handlePresetChange(e.target.value as QualityPreset)}
 								disabled={disabled}
-								className="radio radio-primary radio-sm mr-2 mt-0.5"
+								className="sr-only"
 								aria-describedby="preset-custom-desc"
 							/>
 							<div>

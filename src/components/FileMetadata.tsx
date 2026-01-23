@@ -5,7 +5,6 @@
 import type { MediaFile } from '../types/media.types';
 import { formatBytes } from '../utils/fileSize';
 import { formatDuration } from '../utils/duration';
-import { VideoThumbnail } from './VideoThumbnail';
 
 interface FileMetadataProps {
 	/** Media file with metadata */
@@ -118,20 +117,34 @@ export function FileMetadata({ file, compact = false }: FileMetadataProps) {
 		hasAudio && metadata.audioBitrate && { label: 'Audio Bitrate', value: `${(metadata.audioBitrate / 1000).toFixed(0)} kbps` },
 	].filter(Boolean) as { label: string; value: string }[];
 
+	if (hasVideo && file.thumbnailUrl) {
+		return (
+			<div className="relative rounded-lg border border-base-300 overflow-hidden min-h-56">
+				<img
+					src={file.thumbnailUrl}
+					alt={`Preview of ${file.name}`}
+					className="absolute inset-0 w-full h-full object-cover"
+				/>
+				<div className="absolute inset-y-0 right-0 w-3/5 bg-black/60 backdrop-blur-sm flex items-center">
+					<div className="p-4 w-full">
+						<h3 className="mb-3 text-sm font-semibold text-white/90">File Information</h3>
+						<div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+							{infoItems.map((item) => (
+								<div key={item.label} className="min-w-0">
+									<dt className="text-xs text-white/60">{item.label}</dt>
+									<dd className="text-sm font-medium text-white truncate" title={item.value}>{item.value}</dd>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="rounded-lg border border-base-300 bg-base-200/50 p-4">
 			<div className="flex flex-col sm:flex-row gap-4">
-				{hasVideo && (
-					<div className="flex-shrink-0 flex justify-center sm:justify-start">
-						<VideoThumbnail
-							thumbnailUrl={file.thumbnailUrl}
-							alt={`Preview of ${file.name}`}
-							size="lg"
-							className="w-full sm:w-48"
-						/>
-					</div>
-				)}
-
 				<div className="flex-1 min-w-0">
 					<h3 className="mb-3 text-sm font-semibold text-base-content/90">File Information</h3>
 					<div className="grid grid-cols-2 gap-x-4 gap-y-2">
