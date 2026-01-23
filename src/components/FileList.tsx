@@ -4,6 +4,7 @@
 
 import type { MediaFile } from '../types/media.types';
 import { formatBytes } from '../utils/fileSize';
+import { VideoThumbnail } from './VideoThumbnail';
 
 interface FileListProps {
 	/** Array of uploaded files */
@@ -36,20 +37,47 @@ export function FileList({ files, onRemove, disabled = false }: FileListProps) {
 						className="flex items-center gap-3 rounded-lg border border-base-300 bg-base-100 p-3 transition-colors hover:bg-base-200/50"
 					>
 						<div className="flex-shrink-0">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-6 w-6 text-base-content/60"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+							{file.metadata?.hasVideo && file.thumbnailUrl ? (
+								<VideoThumbnail
+									thumbnailUrl={file.thumbnailUrl}
+									alt={file.name}
+									size="sm"
 								/>
-							</svg>
+							) : (
+								<div className="w-12 h-12 rounded-lg bg-base-300 flex items-center justify-center">
+									{file.metadata?.hasVideo ? (
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-6 w-6 text-base-content/60"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth={2}
+												d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+											/>
+										</svg>
+									) : (
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											className="h-6 w-6 text-base-content/60"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth={2}
+												d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
+											/>
+										</svg>
+									)}
+								</div>
+							)}
 						</div>
 
 						<div className="flex-1 min-w-0">

@@ -50,6 +50,8 @@ export interface MediaFile {
 	file: File;
 	/** Extracted metadata (populated asynchronously) */
 	metadata: MediaFileMetadata | null;
+	/** Thumbnail data URL for video files (populated asynchronously) */
+	thumbnailUrl: string | null;
 	/** Upload timestamp */
 	createdAt: Date;
 }

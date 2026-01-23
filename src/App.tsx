@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo, lazy, Suspense } from 'react';
 import { isWebCodecsSupported } from './utils/validation';
 import { extractMetadata } from './services/metadataService';
+import { generateThumbnail } from './services/thumbnailService';
 import { createBlobUrl, revokeBlobUrl, downloadAsZip } from './services/downloadService';
 import { estimateOutputSize } from './services/conversionService';
 import { useMediaConverter } from './hooks/useMediaConverter';
@@ -88,6 +89,7 @@ function App() {
 				type: file.type,
 				file,
 				metadata: null,
+				thumbnailUrl: null,
 				createdAt: new Date(),
 			};
 
@@ -98,12 +100,15 @@ function App() {
 			});
 
 			try {
-				const metadata = await extractMetadata(file);
-				mediaFile.metadata = metadata;
-				setSelectedFiles(prev => prev.map(f => (f.id === mediaFile.id ? { ...f, metadata } : f)));
+				const [metadata, thumbnailUrl] = await Promise.all([
+					extractMetadata(file),
+					generateThumbnail(file),
+				]);
+				setSelectedFiles(prev => prev.map(f => (f.id === mediaFile.id ? { ...f, metadata, thumbnailUrl } : f)));
 
 				if (selectedFiles.length === 0) {
-					const formats = await getSupportedFormatsWithEncodability(mediaFile);
+					const updatedFile = { ...mediaFile, metadata };
+					const formats = await getSupportedFormatsWithEncodability(updatedFile);
 					setAvailableFormats(formats);
 				}
 			} catch (error) {
