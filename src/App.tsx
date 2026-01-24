@@ -355,7 +355,7 @@ function App() {
 									/>
 								)}
 
-								{!isBatchMode && selectedFile?.metadata && (
+								{!isBatchMode && selectedFile && (
 									<Suspense fallback={<div className="skeleton h-24 w-full rounded-xl"></div>}>
 										<FileMetadata file={selectedFile} />
 									</Suspense>
@@ -406,12 +406,13 @@ function App() {
 
 								<div className="mt-6">
 									<button
-										className="btn btn-primary w-full gap-2"
+										className="btn w-full gap-3 border-0 text-white font-semibold text-lg py-3 h-auto min-h-14 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-linear-to-r from-violet-500 via-purple-500 to-fuchsia-500 hover:from-violet-600 hover:via-purple-600 hover:to-fuchsia-600 disabled:from-gray-400 disabled:via-gray-400 disabled:to-gray-400 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
 										onClick={() => void (isBatchMode ? handleConvertBatch() : handleConvertSingle())}
 										disabled={!canConvert}
 									>
-										<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-											<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+										<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+											<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+											<path d="M21 3v5h-5" />
 										</svg>
 										{isBatchMode ? `Convert ${selectedFiles.length} Files` : 'Convert'}
 									</button>

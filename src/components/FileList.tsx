@@ -37,7 +37,9 @@ export function FileList({ files, onRemove, disabled = false }: FileListProps) {
 						className="flex items-center gap-3 rounded-lg border border-base-300 bg-base-100 p-3 transition-colors hover:bg-base-200/50"
 					>
 						<div className="flex-shrink-0">
-							{file.metadata?.hasVideo && file.thumbnailUrl ? (
+							{!file.metadata ? (
+								<div className="skeleton w-12 h-12 rounded-lg"></div>
+							) : file.metadata.hasVideo && file.thumbnailUrl ? (
 								<VideoThumbnail
 									thumbnailUrl={file.thumbnailUrl}
 									alt={file.name}
@@ -45,7 +47,7 @@ export function FileList({ files, onRemove, disabled = false }: FileListProps) {
 								/>
 							) : (
 								<div className="w-12 h-12 rounded-lg bg-base-300 flex items-center justify-center">
-									{file.metadata?.hasVideo ? (
+									{file.metadata.hasVideo ? (
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											className="h-6 w-6 text-base-content/60"
@@ -86,7 +88,12 @@ export function FileList({ files, onRemove, disabled = false }: FileListProps) {
 							</p>
 							<div className="flex items-center gap-2 text-xs text-base-content/60">
 								<span>{formatBytes(file.size)}</span>
-								{file.metadata && (
+								{!file.metadata ? (
+									<>
+										<span>•</span>
+										<div className="skeleton h-3 w-16"></div>
+									</>
+								) : (
 									<>
 										<span>•</span>
 										<span>{file.metadata.format.toUpperCase()}</span>
