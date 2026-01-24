@@ -261,7 +261,7 @@ export function QualitySettings({
 			{/* Preset Selection */}
 			<fieldset>
 				<legend className="label">
-					<h3 className="label-text font-medium mb-4 text-xl">Quality Preset</h3>
+					<h3 className="label-text font-medium mb-4 text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Quality Preset</h3>
 				</legend>
 				<div className="space-y-2">
 					{/* Preset Radio Buttons */}
@@ -337,7 +337,7 @@ export function QualitySettings({
 			{(videoCodecs.length > 0 || audioCodecs.length > 0) && (
 				<fieldset>
 					<legend className="label">
-						<h3 className="label-text font-medium mb-4 text-xl">Codec Selection</h3>
+						<h3 className="label-text font-medium mb-4 text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Codec Selection</h3>
 					</legend>
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						{/* Video Codec */}
@@ -419,7 +419,7 @@ export function QualitySettings({
 			{showAdvanced && qualityProfile.preset === 'custom' && (
 				<div className="space-y-4 rounded-lg border border-base-300 p-4 bg-base-200/50">
 					<div className="flex justify-between items-center">
-						<h3 className="font-medium text-xl">Advanced Settings</h3>
+						<h3 className="font-medium text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Advanced Settings</h3>
 						<span className="text-xs text-base-content/60">
 							Leave blank to preserve source settings
 						</span>

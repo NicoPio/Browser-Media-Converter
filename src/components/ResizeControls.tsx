@@ -99,7 +99,7 @@ export function ResizeControls({
 			{/* Resolution Preset Selection */}
 			<fieldset>
 				<legend className="label">
-					<h3 className="label-text font-medium text-xl my-4">Output Resolution</h3>
+					<h3 className="label-text font-medium text-xl my-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Output Resolution</h3>
 				</legend>
 				<div className="space-y-2">
 					{/* Preset Radio Buttons */}

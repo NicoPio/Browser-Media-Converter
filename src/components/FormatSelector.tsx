@@ -42,7 +42,7 @@ export function FormatSelector({
 	return (
 		<div className="form-control w-full">
 			<label htmlFor="format-select" className="label flex justify-between items-center flex-nowrap">
-				<h3 className="label-text font-medium my-4 text-xl">Output Format</h3>
+				<h3 className="label-text font-medium my-4 text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">Output Format</h3>
 				{showDetails && (
 					<button
 						type="button"
