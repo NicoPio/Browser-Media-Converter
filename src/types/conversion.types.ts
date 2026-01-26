@@ -6,6 +6,8 @@ import type { MediaFile } from './media.types';
 import type { OutputFormat } from '../constants/formats';
 import type { QualityProfile } from './quality.types';
 import type { ResizeConfiguration } from './resize.types';
+import type { GifConfiguration } from './gif.types';
+import type { TrimConfiguration } from './trim.types';
 
 /**
  * Conversion job status states
@@ -47,6 +49,10 @@ export interface ConversionJob {
 	qualityProfile: QualityProfile;
 	/** Resize configuration (optional) */
 	resizeConfig?: ResizeConfiguration;
+	/** GIF-specific configuration (optional, for GIF output) */
+	gifConfig?: Partial<GifConfiguration>;
+	/** Trim configuration (optional) */
+	trimConfig?: TrimConfiguration;
 	/** Current conversion status */
 	status: ConversionStatus;
 	/** Progress percentage (0-100) */
@@ -109,6 +115,10 @@ export interface ConversionConfig {
 	qualityProfile: QualityProfile;
 	/** Resize configuration (optional) */
 	resizeConfig?: ResizeConfiguration;
+	/** GIF-specific configuration (optional, for GIF output) */
+	gifConfig?: Partial<GifConfiguration>;
+	/** Trim configuration (optional) */
+	trimConfig?: TrimConfiguration;
 	/** Progress callback (0-1) */
 	onProgress?: (progress: number) => void;
 }

@@ -145,7 +145,7 @@ A user needs clear feedback when something goes wrong during the conversion proc
 - **SC-004**: 90% of conversions complete successfully without errors for valid, non-corrupted media files
 - **SC-005**: Users can locate and select output format within 3 clicks from file drop
 - **SC-006**: Error messages provide actionable guidance in 100% of failure cases
-- **SC-007**: Converted files maintain quality standards with less than 5% quality degradation compared to source at "High Quality" preset
+- **SC-007**: Converted files at "High Quality" preset maintain acceptable visual/audio quality: video bitrate ≥ 80% of source (when not upscaling), audio sample rate preserved or resampled to standard (44.1kHz/48kHz), no frame drops, and manual review confirms no visible artifacts
 - **SC-008**: Interface remains responsive during conversions, with UI updates at least once per second
 - **SC-009**: Users can complete their first file conversion within 1 minute without external documentation
 - **SC-010**: System supports files up to 2GB in size on modern browsers with 8GB+ RAM

@@ -16,7 +16,7 @@
 ## Path Conventions
 
 - **CI/CD workflows**: `.github/workflows/` (GitHub Actions standard location)
-- **Documentation**: `docs/.vitepress/` (VitePress configuration)
+- **Application**: `app/browser-media-converter/` (Vite + React app)
 - **Repository settings**: Configured via GitHub web UI
 
 ---
@@ -369,15 +369,15 @@ With multiple developers:
 
 Before marking this feature complete, verify:
 
-- [ ] CI workflow file exists at `.github/workflows/ci.yml`
-- [ ] Deploy workflow file exists at `.github/workflows/deploy.yml`
-- [ ] All jobs in CI workflow run in parallel (test matrix, lint, typecheck, build)
-- [ ] Test matrix includes Node.js 18 and 20
-- [ ] npm caching is configured in all jobs
-- [ ] VitePress base path is set to `/mediabunny/`
-- [ ] GitHub Pages source is set to "GitHub Actions"
-- [ ] Branch protection requires CI to pass
+- [X] CI workflow file exists at `.github/workflows/ci.yml`
+- [X] Deploy workflow file exists at `.github/workflows/deploy.yml`
+- [X] All jobs in CI workflow run in parallel (test matrix, lint, typecheck, build)
+- [X] Test matrix includes Node.js 18 and 20
+- [X] npm caching is configured in all jobs
+- [X] Vite app builds correctly for GitHub Pages deployment
+- [ ] GitHub Pages source is set to "GitHub Actions" (manual GitHub UI step)
+- [ ] Branch protection requires CI to pass (manual GitHub UI step)
 - [ ] Test PR shows all CI checks (test×2, lint, typecheck, build)
-- [ ] Documentation deployment works and site is accessible
-- [ ] Quickstart guide is accurate and complete
-- [ ] README includes CI badges and links to documentation
+- [ ] App deployment works and site is accessible
+- [X] Quickstart guide is accurate and complete
+- [X] README includes CI badges and links to documentation

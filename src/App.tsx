@@ -27,14 +27,24 @@ const FileMetadata = lazy(() =>
 const ConversionQueue = lazy(() =>
 	import('./components/ConversionQueue').then(m => ({ default: m.ConversionQueue })),
 );
+const GifSettings = lazy(() =>
+	import('./components/GifSettings').then(m => ({ default: m.GifSettings })),
+);
+const TrimControls = lazy(() =>
+	import('./components/TrimControls').then(m => ({ default: m.TrimControls })),
+);
 import type { MediaFile } from './types/media.types';
 import type { OutputFormat, OutputFormatWithSupport } from './constants/formats';
 import type { ConversionResult, ConversionJob } from './types/conversion.types';
 import type { QualityProfile } from './types/quality.types';
 import type { ResizeConfiguration } from './types/resize.types';
+import type { GifConfiguration } from './types/gif.types';
+import type { TrimConfiguration } from './types/trim.types';
 import { OUTPUT_FORMATS } from './constants/formats';
 import { DEFAULT_QUALITY } from './constants/qualityPresets';
 import { DEFAULT_RESIZE_CONFIG } from './constants/resolutionPresets';
+import { DEFAULT_GIF_CONFIG } from './types/gif.types';
+import { DEFAULT_TRIM_CONFIG } from './types/trim.types';
 import { formatBytes } from './utils/fileSize';
 
 type AppMode = 'single' | 'batch';
@@ -50,6 +60,8 @@ function App() {
 	);
 	const [qualityProfile, setQualityProfile] = useState<QualityProfile>(DEFAULT_QUALITY);
 	const [resizeConfig, setResizeConfig] = useState<ResizeConfiguration>(DEFAULT_RESIZE_CONFIG);
+	const [gifConfig, setGifConfig] = useState<GifConfiguration>(DEFAULT_GIF_CONFIG);
+	const [trimConfig, setTrimConfig] = useState<TrimConfiguration>(DEFAULT_TRIM_CONFIG);
 	const [conversionResult, setConversionResult] = useState<ConversionResult | null>(null);
 
 	const queueContext = useConversionQueueContext();
@@ -137,13 +149,15 @@ function App() {
 				targetFormat: selectedFormat,
 				qualityProfile,
 				resizeConfig,
+				gifConfig: selectedFormat.format === 'gif' ? gifConfig : undefined,
+				trimConfig: selectedFormat.format !== 'gif' ? trimConfig : undefined,
 			});
 			result.url = createBlobUrl(result);
 			setConversionResult(result);
 		} catch (error) {
 			console.error('Conversion failed:', error);
 		}
-	}, [selectedFile, selectedFormat, convert, resizeConfig]);
+	}, [selectedFile, selectedFormat, convert, resizeConfig, qualityProfile, gifConfig, trimConfig]);
 
 	const handleConvertBatch = useCallback(async () => {
 		if (selectedFiles.length === 0 || !selectedFormat) return;
@@ -156,6 +170,8 @@ function App() {
 				targetFormat: selectedFormat,
 				qualityProfile,
 				resizeConfig,
+				gifConfig: selectedFormat.format === 'gif' ? gifConfig : undefined,
+				trimConfig: selectedFormat.format !== 'gif' ? trimConfig : undefined,
 				status: 'queued',
 				progress: 0,
 				error: null,
@@ -167,7 +183,7 @@ function App() {
 			return job;
 		});
 		queueContext.addJobs(jobs, true);
-	}, [selectedFiles, selectedFormat, qualityProfile, queueContext]);
+	}, [selectedFiles, selectedFormat, qualityProfile, resizeConfig, gifConfig, trimConfig, queueContext]);
 
 	const handleDownloadAllAsZip = useCallback(async () => {
 		const completedJobs = queueContext.queue.jobs.filter(j => j.status === 'completed' && j.result);
@@ -195,6 +211,8 @@ function App() {
 		setAvailableFormats(OUTPUT_FORMATS.map(f => ({ ...f, isEncodable: true })));
 		setMode('single');
 		setResizeConfig(DEFAULT_RESIZE_CONFIG);
+		setGifConfig(DEFAULT_GIF_CONFIG);
+		setTrimConfig(DEFAULT_TRIM_CONFIG);
 		queueContext.clearAll();
 	}, [conversionResult, queueContext]);
 
@@ -370,7 +388,7 @@ function App() {
 									disabled={converting || queueContext.statistics.isProcessing}
 								/>
 
-								{selectedFormat && (
+								{selectedFormat && selectedFormat.format !== 'gif' && (
 									<Suspense fallback={<div className="skeleton h-48 w-full rounded-xl mt-4"></div>}>
 										<QualitySettings
 											qualityProfile={qualityProfile}
@@ -383,6 +401,32 @@ function App() {
 											resizeConfig={resizeConfig}
 											onResizeChange={setResizeConfig}
 											selectedFormat={selectedFormat}
+										/>
+									</Suspense>
+								)}
+
+								{selectedFormat && selectedFormat.format !== 'gif' && !isBatchMode && (
+									<Suspense fallback={<div className="skeleton h-32 w-full rounded-xl mt-4"></div>}>
+										<TrimControls
+											config={trimConfig}
+											onConfigChange={setTrimConfig}
+											sourceDuration={selectedFile?.metadata?.duration ?? null}
+											disabled={converting || queueContext.statistics.isProcessing}
+											hasVideo={selectedFile?.metadata?.hasVideo ?? false}
+											hasAudio={selectedFile?.metadata?.hasAudio ?? false}
+										/>
+									</Suspense>
+								)}
+
+								{selectedFormat && selectedFormat.format === 'gif' && (
+									<Suspense fallback={<div className="skeleton h-48 w-full rounded-xl mt-4"></div>}>
+										<GifSettings
+											config={gifConfig}
+											onConfigChange={setGifConfig}
+											sourceWidth={selectedFile?.metadata?.width ?? null}
+											sourceHeight={selectedFile?.metadata?.height ?? null}
+											sourceDuration={selectedFile?.metadata?.duration ?? null}
+											disabled={converting || queueContext.statistics.isProcessing}
 										/>
 									</Suspense>
 								)}

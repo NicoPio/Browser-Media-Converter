@@ -36,8 +36,9 @@ export function FormatSelector({
 
 	// Group formats by type
 	const sameFormat = formats.find(f => f.format === 'same');
-	const videoFormats = formats.filter(f => f.supportsVideo && f.format !== 'same');
+	const videoFormats = formats.filter(f => f.supportsVideo && f.format !== 'same' && f.format !== 'gif');
 	const audioFormats = formats.filter(f => !f.supportsVideo && f.supportsAudio);
+	const gifFormat = formats.find(f => f.format === 'gif');
 
 	return (
 		<div className="form-control w-full">
@@ -119,6 +120,22 @@ export function FormatSelector({
 								{!format.isEncodable && ' - Not supported'}
 							</option>
 						))}
+					</optgroup>
+				)}
+
+				{gifFormat && (
+					<optgroup label="Image Formats">
+						<option
+							key={gifFormat.format}
+							value={gifFormat.format}
+							disabled={!gifFormat.isEncodable}
+						>
+							{gifFormat.displayName}
+							{' '}
+							(
+							{gifFormat.extension}
+							)
+						</option>
 					</optgroup>
 				)}
 			</select>

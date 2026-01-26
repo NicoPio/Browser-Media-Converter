@@ -31,6 +31,9 @@ import { ConversionError, ConversionErrorType } from '../types/conversion.types'
 import { generateFilename } from './downloadService';
 import { calculatePresetDimensions, calculateTargetDimensions } from '../utils/dimensions';
 import { getPresetById } from '../constants/resolutionPresets';
+import { convertToGif } from './gifService';
+import type { GifConfiguration } from '../types/gif.types';
+import type { TrimConfiguration } from '../types/trim.types';
 
 /**
  * Active conversions map for cancellation support
@@ -44,7 +47,12 @@ const activeConversions = new Map<string, Conversion>();
  * @throws ConversionError if conversion fails
  */
 export async function convert(config: ConversionConfig): Promise<ConversionResult> {
-	const { sourceFile, targetFormat, qualityProfile, resizeConfig, onProgress } = config;
+	const { sourceFile, targetFormat, qualityProfile, resizeConfig, onProgress, gifConfig, trimConfig } = config;
+
+	// Handle GIF conversion separately (not supported by mediabunny)
+	if (targetFormat.format === 'gif') {
+		return convertToGifFormat(sourceFile, resizeConfig, gifConfig, trimConfig, onProgress);
+	}
 
 	try {
 		// Create input from source file
@@ -75,12 +83,15 @@ export async function convert(config: ConversionConfig): Promise<ConversionResul
 
 		const audioConfig = await getAudioConfig(input, qualityProfile, resolvedFormat);
 
+		// Build trim options if enabled
+		const trim = getTrimOptions(trimConfig);
+
 		// Initialize conversion (mediabunny API uses any types)
 
 		const conversion = await Conversion.init({
 			input,
 			output,
-
+			trim,
 			video: videoConfig,
 
 			audio: audioConfig,
@@ -355,4 +366,86 @@ async function getAudioConfig(
 		numberOfChannels: audioSettings.channels ?? undefined,
 		codec: audioSettings.codec ?? undefined,
 	};
+}
+
+/**
+ * Build trim options for mediabunny Conversion
+ */
+function getTrimOptions(
+	trimConfig?: TrimConfiguration,
+): { start?: number; end?: number } | undefined {
+	if (!trimConfig?.enabled) {
+		return undefined;
+	}
+
+	const hasStartTrim = trimConfig.startTime > 0;
+	const hasEndTrim = trimConfig.endTime !== null;
+
+	if (!hasStartTrim && !hasEndTrim) {
+		return undefined;
+	}
+
+	const trim: { start?: number; end?: number } = {};
+
+	if (hasStartTrim) {
+		trim.start = trimConfig.startTime;
+	}
+
+	if (hasEndTrim) {
+		trim.end = trimConfig.endTime!;
+	}
+
+	return trim;
+}
+
+/**
+ * Convert a video file to GIF format
+ */
+async function convertToGifFormat(
+	sourceFile: MediaFile,
+	resizeConfig?: ResizeConfiguration,
+	gifConfig?: Partial<GifConfiguration>,
+	trimConfig?: TrimConfiguration,
+	onProgress?: (progress: number) => void,
+): Promise<ConversionResult> {
+	try {
+		const config: Partial<GifConfiguration> = { ...gifConfig };
+
+		// Apply trim config to GIF config
+		if (trimConfig?.enabled) {
+			config.startTime = trimConfig.startTime;
+			config.endTime = trimConfig.endTime ?? undefined;
+		}
+
+		if (resizeConfig && resizeConfig.presetId !== 'original') {
+			if (resizeConfig.presetId === 'custom') {
+				config.width = resizeConfig.customWidth ?? undefined;
+				config.height = resizeConfig.customHeight ?? undefined;
+			} else {
+				const preset = getPresetById(resizeConfig.presetId);
+				if (preset?.referenceHeight) {
+					config.height = preset.referenceHeight;
+				}
+			}
+			config.maintainAspectRatio = resizeConfig.maintainAspectRatio;
+		}
+
+		const result = await convertToGif(
+			sourceFile.file,
+			config,
+			onProgress ? (p) => onProgress(p.progress / 100) : undefined,
+		);
+
+		const filename = generateFilename(sourceFile.name, '.gif');
+
+		return {
+			blob: result.blob,
+			filename,
+			size: result.size,
+			url: null,
+		};
+	} catch (error) {
+		const message = error instanceof Error ? error.message : 'GIF conversion failed';
+		throw new ConversionError(ConversionErrorType.MEDIABUNNY_ERROR, message, error as Error);
+	}
 }

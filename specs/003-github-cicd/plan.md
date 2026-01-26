@@ -57,18 +57,20 @@ specs/003-github-cicd/
 ```text
 .github/
 └── workflows/
-    ├── ci.yml           # PR testing workflow (unit, browser, lint, typecheck, build)
-    └── deploy.yml       # Documentation deployment workflow (build docs + deploy to Pages)
+    ├── ci.yml           # PR testing workflow (lint, typecheck, build)
+    └── deploy.yml       # App deployment workflow (build app + deploy to Pages)
 
-# Existing structure (unchanged)
-src/                     # Library source code
-test/                    # Test suites
-docs/                    # Documentation source
-examples/                # Example applications
-package.json             # Contains npm scripts used by CI
+# Application structure (post-migration 002)
+app/
+└── browser-media-converter/
+    ├── src/             # React application source
+    ├── package.json     # App dependencies (mediabunny from npm)
+    └── vite.config.ts   # Vite build configuration
+specs/                   # Feature specifications
+.specify/                # Speckit configuration
 ```
 
-**Structure Decision**: GitHub Actions workflows are stored in `.github/workflows/` following GitHub's standard convention. This is a repository-level infrastructure addition that does not modify the existing project structure. The workflows consume existing npm scripts (`test`, `check`, `lint`, `docs:build`) and require no changes to source code organization.
+**Structure Decision**: GitHub Actions workflows are stored in `.github/workflows/` following GitHub's standard convention. This is a repository-level infrastructure addition. The workflows consume npm scripts from `app/browser-media-converter/` (`build`, `lint`, `check`) and deploy the built app to GitHub Pages.
 
 ## Complexity Tracking
 

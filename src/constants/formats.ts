@@ -6,7 +6,7 @@
  * Supported output format types
  * 'same' represents keeping the same format as the input file
  */
-export type FormatType = 'same' | 'mp4' | 'mov' | 'webm' | 'mkv' | 'wav' | 'mp3' | 'ogg' | 'aac' | 'flac';
+export type FormatType = 'same' | 'mp4' | 'mov' | 'webm' | 'mkv' | 'wav' | 'mp3' | 'ogg' | 'aac' | 'flac' | 'gif';
 
 /**
  * Recommended codecs for a format
@@ -185,6 +185,19 @@ export const OUTPUT_FORMATS: OutputFormat[] = [
 		recommendedCodecs: {
 			video: [],
 			audio: ['flac'],
+		},
+	},
+	{
+		format: 'gif',
+		extension: '.gif',
+		mimeType: 'image/gif',
+		displayName: 'GIF Animation',
+		description: 'Animated GIF - Perfect for short clips, memes, and social media. No audio support.',
+		supportsVideo: true,
+		supportsAudio: false,
+		recommendedCodecs: {
+			video: [],
+			audio: [],
 		},
 	},
 ];

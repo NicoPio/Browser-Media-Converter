@@ -1,50 +1,56 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Browser-media-converter Apps Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Client-Side Only (NON-NÉGOCIABLE)
+Toutes les opérations de traitement média DOIVENT s'exécuter dans le navigateur.
+Aucune donnée utilisateur (fichiers, métadonnées) ne DOIT être envoyée à un serveur.
+Cette règle garantit la confidentialité des données utilisateur.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Zero External Dependencies (Library Core)
+La librairie mediabunny (package npm) ne DOIT pas avoir de dépendances npm externes.
+Les applications dans `app/` PEUVENT utiliser des dépendances tierces (React, Tailwind, etc.).
+Cette séparation permet un core léger et tree-shakable.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Accessibility First
+Toutes les interfaces DOIVENT respecter WCAG 2.1 AA minimum :
+- Navigation clavier complète
+- Labels ARIA appropriés
+- Contraste suffisant (4.5:1 pour texte normal)
+- Messages d'erreur accessibles aux lecteurs d'écran
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Progressive Enhancement
+Les fonctionnalités avancées (WebCodecs API) DOIVENT dégrader gracieusement.
+Un message clair DOIT informer l'utilisateur si son navigateur n'est pas supporté.
+Les fonctionnalités de base doivent fonctionner sur tous les navigateurs modernes.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Test Coverage
+- Nouveaux composants UI DOIVENT avoir des tests unitaires
+- Nouvelles fonctionnalités DOIVENT avoir des tests E2E
+- Les tests existants ne DOIVENT pas être supprimés sans justification
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### VI. Error Handling
+- Toutes les erreurs DOIVENT afficher un message utilisateur compréhensible
+- Les erreurs techniques DOIVENT être loggées en console pour debugging
+- L'application ne DOIT jamais crasher silencieusement
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Technology Standards
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Frontend Applications
+- TypeScript strict mode obligatoire
+- React 18+ avec hooks fonctionnels
+- Tailwind CSS v4 + DaisyUI pour le styling
+- Vitest pour tests unitaires, Playwright pour E2E
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Formats Supportés
+- Conteneurs: MP4, MOV, WebM, MKV, WAVE, MP3, Ogg, ADTS, FLAC
+- Codecs: Selon support WebCodecs du navigateur
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- Cette constitution s'applique à toutes les features dans `specs/`
+- Toute violation DOIT être documentée et justifiée dans le plan de la feature
+- Modifications de la constitution requièrent une mise à jour explicite de ce document
+- Les principes marqués "NON-NÉGOCIABLE" ne peuvent être contournés
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-01-26 | **Last Amended**: 2026-01-26

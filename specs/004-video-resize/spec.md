@@ -167,6 +167,19 @@ Un utilisateur souhaite redimensionner sa vidéo tout en conservant d'autres par
 
 - **Sample video file**: `src/fixtures/sample-video.mp4` - fichier vidéo de test disponible pour les tests unitaires et d'intégration.
 
+## Clarification: Resolution vs Quality Presets
+
+Cette feature introduit des **Resolution Presets** qui sont distincts des **Quality Presets** existants (feature 001):
+
+| Aspect | Resolution Presets (cette feature) | Quality Presets (feature 001) |
+|--------|-----------------------------------|------------------------------|
+| **Contrôle** | Dimensions de la vidéo (pixels) | Bitrate et paramètres d'encodage |
+| **Exemples** | 720p = 1280×720, 1080p = 1920×1080 | High = 8Mbps, Balanced = 2.5Mbps |
+| **Effet** | Taille fichier via nombre de pixels | Taille fichier via compression |
+| **Indépendant** | Ne modifie PAS le bitrate/codec | Ne modifie PAS les dimensions |
+
+**Combinaison** : Un utilisateur peut choisir "720p" (resolution) + "High Quality" (quality). Le système applique les deux paramètres indépendamment lors de la conversion.
+
 ## Out of Scope
 
 - Recadrage (crop) de la vidéo - fonctionnalité distincte du redimensionnement.

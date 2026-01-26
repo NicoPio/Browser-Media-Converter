@@ -129,6 +129,8 @@ export function useConversionQueue() {
 					targetFormat: nextJob.targetFormat,
 					qualityProfile: nextJob.qualityProfile,
 					resizeConfig: nextJob.resizeConfig,
+					gifConfig: nextJob.gifConfig,
+					trimConfig: nextJob.trimConfig,
 					onProgress: (progress) => {
 						updateJob(nextJob.id, { progress: Math.round(progress * 100) });
 					},
